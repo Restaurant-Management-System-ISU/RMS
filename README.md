@@ -17,7 +17,7 @@ Controllers: RMSController, AdminController, CustomerController.
 Services: AdminService, UserService.
 
 ## N-tier Architecture
-![architecture drawio](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/14f79bd0-1850-4dc5-80d3-0ea89d0bdd8a)
+![architecturelayer](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/1a1f6980-3ab0-414b-b899-0cf0fc5e81aa)
 
 
 ## Communication between Layers
