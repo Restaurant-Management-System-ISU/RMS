@@ -18,3 +18,9 @@ Services: AdminService, UserService.
 
 ## N-tier Architecture
 ![architecture drawio](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/14f79bd0-1850-4dc5-80d3-0ea89d0bdd8a)
+
+
+## Communication between Layers
+The UI layer communicates with the application layer by invoking controller methods. For example, RMSController handles requests from customers.
+The application layer interacts with the domain layer through service methods, such as AdminService and UserService. These services perform business logic and use JPA repositories to access data.
+Repositories like UserRepo and MenuRepo, manage the persistence of data in the database.
