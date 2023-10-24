@@ -92,6 +92,26 @@ public class AdminController {
 		
 		return "admin/updatemenu";
 	}
+
+	@PostMapping("/updateMenu")
+	public String updateMenu(@ModelAttribute("menu") Menu menu, Model model, HttpSession session)
+	{
+		System.out.println("menu updated");
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+		
+		adminService.updateMenu(menu);
+		
+			return "redirect:/menu";
+		
+	}
 	
 	@PostMapping("/deleteMenu/{id}")
 	public String deleteHouse(@PathVariable(name="id") Long id)
