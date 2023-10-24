@@ -74,6 +74,24 @@ public class AdminController {
 			return "redirect:/menu";
 		
 	}
+
+	@GetMapping("/editMenu/{id}")
+	public String editMenu(Model model, HttpSession session, @PathVariable(name="id") Long id) {
+		
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		Menu menu = adminService.getMenuById(id);
+		model.addAttribute("menu", menu);
+		
+        model.addAttribute("sessionMessages", messages);
+		
+		return "admin/updatemenu";
+	}
 	
 	@PostMapping("/deleteMenu/{id}")
 	public String deleteHouse(@PathVariable(name="id") Long id)
@@ -82,4 +100,5 @@ public class AdminController {
 		
 		return "redirect:/admin";
 	}
+
 }
