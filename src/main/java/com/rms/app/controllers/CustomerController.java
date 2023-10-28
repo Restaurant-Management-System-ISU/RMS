@@ -51,4 +51,42 @@ public class CustomerController {
 
 		return "customer/welcomecustomer";
 	}
+
+	@GetMapping("/reservetable")
+	public String getCustomerProfile(@ModelAttribute("table") Tables table, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+		User userModel = userService.getUserByEmail(messages.get(0));
+		 
+		Tables tableModel = new Tables();
+			
+	        
+	    model.addAttribute("table", tableModel);
+
+		return "customer/reservetable";
+	}
+	
+	@PostMapping("/bookTable")
+	public String bookTable(@ModelAttribute("table") Tables table, Model model)
+	{
+		System.out.println("save===table");
+		int output =userService.saveTable(table);
+		if(output>0) {
+			return "redirect:/customer";
+		}
+		
+		else {
+			model.addAttribute("errormsg", "Operation failed. Please try again");
+			return "home/error";
+		}
+		
+	}
 }
