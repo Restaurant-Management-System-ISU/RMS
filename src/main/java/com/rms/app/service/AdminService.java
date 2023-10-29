@@ -15,6 +15,17 @@ public interface AdminService {
 
 	void deleteMenu(Long id);
 
+	Menu getMenuById(Long id);
+
+	void updateMenu(Menu menu);
+
+	List<Staff> getAllStaff();
+
+	void saveStaff(Staff staff);
+
+	void deleteStaff(Long id);
+
+
 	
 
 
