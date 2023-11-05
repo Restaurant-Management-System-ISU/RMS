@@ -6,9 +6,15 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rms.app.dao.CartRepo;
 import com.rms.app.dao.MenuRepo;
+import com.rms.app.dao.StaffRepo;
+import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
+import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Staff;
+import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 
 
@@ -20,6 +26,15 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private MenuRepo menuRepo;
+	
+	@Autowired
+	private StaffRepo staffRepo;
+	
+	@Autowired
+	private CartRepo cartRepo;
+	
+	@Autowired
+	private TablesRepo tableRepo;
 	
 	
 
@@ -70,7 +85,17 @@ public class UserServiceImpl implements UserService{
 			return veifiedUser.get(0);
 		}
 		else {
-			return null;
+			List<Staff> staffs = staffRepo.findAll();
+			List<Staff> verifiedStaff = staffs.stream().filter(s -> (s.getEmail().equals(user.getEmail()) || s.getUsername().equals(user.getEmail())) && s.getPassword().equals(user.getPassword())).collect(Collectors.toList());
+			
+			if(verifiedStaff.size() ==1) {
+				
+				user.setUsertype("staff");
+				return user;
+			}
+			else {
+				return null;
+			}
 		}
 			
 	}
@@ -88,7 +113,10 @@ public class UserServiceImpl implements UserService{
 		
 	}
 	
-	public int validatePassword(User usermodel, String securityQuestion, String securityAnswer) {
+	public int validatePassword(User usermodel, String securityQuestion, String securityAnswer, String role) {
+		
+		if(role.equals("customer")) {
+		
 		List<User> users = userRepo.findAll();
 		List<User> verifiedUser = users.stream().filter(n -> n.getEmail().equals(usermodel.getEmail())).collect(Collectors.toList());
 		if(verifiedUser.size() ==1) {
@@ -107,14 +135,48 @@ public class UserServiceImpl implements UserService{
 		else {
 			return 0;
 		}
+		
+		}
+		else {
+			
+			List<Staff> staffs = staffRepo.findAll();
+			List<Staff> verifiedStaff = staffs.stream().filter(s -> s.getEmail().equals(usermodel.getEmail())).collect(Collectors.toList());
+			if(verifiedStaff.size() ==1) {
+				List<Staff> staffSecurities = staffRepo.findAll();
+				
+				List<Staff> securedStaff = staffSecurities.stream().filter(security -> security.getSecurityQuestion().equals(securityQuestion) && security.getSecurityAnswer().equals(securityAnswer)
+						
+						).collect(Collectors.toList());
+				if(securedStaff.size() == 1) {
+					return 1;
+				}
+				else {
+					return 2;
+				}
+			}
+			else {
+				return 0;
+			}
+			
+		}
 	}
 	
-	public void saveNewPassword(User usermodel) {
-			
+	public void saveNewPassword(User usermodel, String role) {
+		
+		if(role.equals("customer")) {
+		
 			User user = userRepo.findbyEmail(usermodel.getEmail());
 			System.out.println("user#########"+user.toString());
 			user.setPassword(usermodel.getPassword());
 			userRepo.save(user);
+			
+		}
+		else {
+			Staff staff = staffRepo.findbyEmail(usermodel.getEmail());
+			System.out.println("user#########"+staff.toString());
+			staff.setPassword(usermodel.getPassword());
+			staffRepo.save(staff);
+		}
 	}
 	
 	public void deleteUser(Long id) {
@@ -135,6 +197,43 @@ public class UserServiceImpl implements UserService{
 	public List<Menu> getAllMenu() {
 		// TODO Auto-generated method stub
 		return menuRepo.findAll();
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		// TODO Auto-generated method stub
+		return userRepo.findbyEmail(email);
+	}
+
+	@Override
+	public void addToCart(Cart cart) {
+		cartRepo.save(cart);
+		
+	}
+
+	@Override
+	public List<Cart> getUserCart(String email) {
+		// TODO Auto-generated method stub
+		return cartRepo.findAll().stream().filter(c -> c.getCustomerEmail().equals(email)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteFromCart(Long id) {
+		cartRepo.deleteById(id);
+		
+	}
+
+	@Override
+	public int saveTable(Tables table) {
+		
+		tableRepo.save(table);
+		
+		if(tableRepo.save(table)!=null) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	
