@@ -145,12 +145,12 @@ public class RMSController {
 	
 	
 	@PostMapping("/validateForgotPassword")
-	public String validatePassword(@ModelAttribute("user") User user, @RequestParam("securityQuestion") String securityQuestion,
+	public String validatePassword(@ModelAttribute("user") User user,@RequestParam("role") String role, @RequestParam("securityQuestion") String securityQuestion,
 			 @RequestParam("securityAnswer") String securityAnswer,
 			Model model,RedirectAttributes redirectAttrs)
 	{
 		System.out.println("forgot password**************************************** ");
-		int output = userService.validatePassword(user, securityQuestion, securityAnswer);
+		int output = userService.validatePassword(user, securityQuestion, securityAnswer, role);
 		
 		if(output == 1)
 		{
@@ -182,11 +182,11 @@ public class RMSController {
 	}
 	
 	@PostMapping("/saveNewPassword")
-	public String saveNewPassword(@ModelAttribute("user") User user, HttpServletRequest request, @Param("confirmPassword") String confirmPassword, Model model)
+	public String saveNewPassword(@ModelAttribute("user") User user, HttpServletRequest request,@RequestParam("role") String role, @Param("confirmPassword") String confirmPassword, Model model)
 	{
 		if(confirmPassword.equals(user.getPassword())) {
 			
-			userService.saveNewPassword(user);
+			userService.saveNewPassword(user, role);
 		}
 		else {
 			model.addAttribute("errormsg", "Passwords donot match");

@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.rms.app.model.Menu;
+import com.rms.app.model.Staff;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
 import com.rms.app.service.UserService;
@@ -74,7 +74,7 @@ public class AdminController {
 			return "redirect:/menu";
 		
 	}
-
+	
 	@GetMapping("/editMenu/{id}")
 	public String editMenu(Model model, HttpSession session, @PathVariable(name="id") Long id) {
 		
@@ -92,7 +92,7 @@ public class AdminController {
 		
 		return "admin/updatemenu";
 	}
-
+	
 	@PostMapping("/updateMenu")
 	public String updateMenu(@ModelAttribute("menu") Menu menu, Model model, HttpSession session)
 	{
@@ -114,13 +114,13 @@ public class AdminController {
 	}
 	
 	@PostMapping("/deleteMenu/{id}")
-	public String deleteHouse(@PathVariable(name="id") Long id)
+	public String deleteMMenu(@PathVariable(name="id") Long id)
 	{
 		adminService.deleteMenu(id);
 		
-		return "redirect:/admin";
+		return "redirect:/menu";
 	}
-
+	
 	@GetMapping("/staffs")
 	public String getStaffPage(@ModelAttribute("staff") Staff staff, Model model, HttpSession session)
 	{
@@ -157,5 +157,4 @@ public class AdminController {
 		
 		return "redirect:/staffs";
 	}
-
 }
