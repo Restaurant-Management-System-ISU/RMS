@@ -48,6 +48,52 @@ public class StaffController {
 
 		return "staff/welcomestaff";
 	}
+
+	@GetMapping("/staffprofile")
+	public String getStaffProfile(@ModelAttribute("staff") Staff staff, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+		Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+			
+	        
+	        model.addAttribute("staff", staffModel);
+
+		return "staff/profile";
+	}
+	
+	@PostMapping("/updateStaffProfile")
+	public String updateStaffProfile(@ModelAttribute("staff") Staff staff, Model model)
+	{
+		System.out.println("save===user");
+		int output =staffService.saveStaff(staff);
+		if(output>0) {
+			return "redirect:/staffprofile";
+		}
+		
+		else {
+			model.addAttribute("errormsg", "Operation failed. Please try again");
+			return "home/error";
+		}
+		
+	}
+	
+	@PostMapping("/deleteStaffProfile/{id}")
+	public String deleteStaffProfile(@PathVariable(name="id") Long id,HttpServletRequest request, Model model)
+	{
+		staffService.deleteStaff(id);
+		 request.getSession().invalidate();
+		 model.addAttribute("errormsg", "Your Account Deleted Successfully");
+			return "home/error";
+	}
+	
 	
 	
 }
