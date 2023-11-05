@@ -121,4 +121,41 @@ public class AdminController {
 		return "redirect:/admin";
 	}
 
+	@GetMapping("/staffs")
+	public String getStaffPage(@ModelAttribute("staff") Staff staff, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		List<Staff> staffList = adminService.getAllStaff();
+		
+        model.addAttribute("sessionMessages", messages);
+        model.addAttribute("staffs", staffList);
+
+		return "admin/staff";
+	}
+	
+	@PostMapping("/saveStaff")
+	public String saveStaff(@ModelAttribute("staff") Staff staff, Model model, HttpSession session)
+	{
+			adminService.saveStaff(staff);
+		
+			return "redirect:/staffs";
+		
+	}
+	
+	
+	
+	@PostMapping("/deleteStaff/{id}")
+	public String deleteStaff(@PathVariable(name="id") Long id)
+	{
+		adminService.deleteStaff(id);
+		
+		return "redirect:/staffs";
+	}
+
 }
