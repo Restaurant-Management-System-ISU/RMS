@@ -204,44 +204,6 @@ public class RMSController {
         return "redirect:/";
     }
 	
-	@RequestMapping("/profile")
-    public String viewProfile(HttpSession session, Model model) {
-		@SuppressWarnings("unchecked")
-        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
-		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
-		}
-		User userdata = userService.findUser(messages.get(0));
-		model.addAttribute("role", userdata.getUsertype());
-		model.addAttribute("user", userdata);
-        return "home/profile";
-    }
-	
-	@PostMapping("/updateProfile")
-	public String updateProfile(@ModelAttribute("user") User user, Model model)
-	{
-		System.out.println("save===user");
-		int output =userService.saveUser(user);
-		if(output>0) {
-			return "redirect:/profile";
-		}
-		
-		else {
-			model.addAttribute("errormsg", "Operation failed. Please try again");
-			return "home/error";
-		}
-		
-	}
-	
-	@PostMapping("/deleteProfile/{id}")
-	public String deleteProfile(@PathVariable(name="id") Long id,HttpServletRequest request, Model model)
-	{
-		userService.deleteUser(id);
-		 request.getSession().invalidate();
-		 model.addAttribute("errormsg", "Your Account Deleted Successfully");
-			return "home/error";
-	}
 	
 	@GetMapping("/resetPassword")
 	public String resetPassword(Model model, HttpSession session) {
