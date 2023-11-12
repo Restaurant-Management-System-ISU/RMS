@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
+import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 
 
@@ -15,6 +16,10 @@ public interface StaffService {
 	Staff getStaffByEmail(String string);
 
 	void deleteStaff(Long id);
+
+	List<Tables> getCustomerReservations();
+
+	void deleteReservation(Long id);
 
 
 

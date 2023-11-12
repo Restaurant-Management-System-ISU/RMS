@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
+import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
 import com.rms.app.service.StaffService;
