@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.rms.app.dao.CartRepo;
 import com.rms.app.dao.MenuRepo;
+import com.rms.app.dao.OrderRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private TablesRepo tableRepo;
+	
+	@Autowired
+	private OrderRepo orderRepo;
 	
 	
 
@@ -236,6 +241,15 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	@Override
+	public void saveOrder(Order order) {
+		// TODO Auto-generated method stub
+		orderRepo.save(order);
+		cartRepo.deleteCart(order.getEmail());
+		
+	}
+
+	
 	
 	
 
