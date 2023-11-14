@@ -246,4 +246,64 @@ public class CustomerController {
 		}
 		
 	}
+		@PostMapping("makePayment")
+	public String makePayment(@ModelAttribute("order") Order order,HttpSession session, Model model )
+	{
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		List<Cart> cart =userService.getUserCart(userdata.getEmail());
+		
+		StringJoiner name = new StringJoiner(",");
+		StringJoiner price = new StringJoiner(",");
+		StringJoiner quantity = new StringJoiner(",");
+		StringJoiner totalCost = new StringJoiner(",");
+		
+		 
+		int finalCost = 0;
+		
+		for(int i=0;i<cart.size(); i++) {
+			
+			name.add(cart.get(i).getName());
+			
+			price.add(cart.get(i).getPrice());
+			
+			quantity.add(cart.get(i).getQuantity());
+			
+			
+			
+			totalCost.add(cart.get(i).getTotalPrice());
+			
+			finalCost = finalCost + Integer.parseInt(cart.get(i).getTotalPrice());
+		}
+		
+		order.setName(name.toString());
+		order.setPrice(price.toString());
+		order.setQuantity(quantity.toString());
+		order.setTotalCost(totalCost.toString());
+		order.setEmail(userdata.getEmail());
+		order.setFinalBill(String.valueOf(finalCost));
+		order.setStatus("ordered");
+		
+		
+		
+		
+		
+		userService.saveOrder(order);
+		
+		
+		
+		
+		return "redirect:/customer";
+	}
+	
+	
+}
+
 }
