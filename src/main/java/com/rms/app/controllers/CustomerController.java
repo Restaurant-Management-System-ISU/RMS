@@ -2,6 +2,7 @@ package com.rms.app.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
@@ -303,7 +305,14 @@ public class CustomerController {
 		return "redirect:/customer";
 	}
 	
+	@PostMapping("/cancelOrder/{id}")
+	public String cancelOrder(@PathVariable(name="id") Long id)
+	{
+		userService.cancelOrder(id);
+		
+		return "redirect:/orders";
+	}
+	
 	
 }
 
-}
