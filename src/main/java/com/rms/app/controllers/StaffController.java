@@ -131,6 +131,42 @@ public class StaffController {
 		return "redirect:/viewreservations";
 	}
 
+	@GetMapping("/confirmorders")
+	public String confirmorders(@ModelAttribute("order") Order order, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+		 
+		List<Order> orders = staffService.getAllOrders();
+		int oSize = orders.size();
+		if(oSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("orders", orders);
+
+		return "staff/confirmorders";
+	}
+	
+	@PostMapping("/confirmOrder/{id}")
+	public String confirmOrder(@PathVariable(name="id") Long id)
+	{
+		staffService.confirmOrder(id);
+		
+		return "redirect:/confirmorders";
+	}
+
 	@PostMapping("/updateOrderStatus/{id}")
 	public String updateOrderStatus(@PathVariable(name="id") Long id, @RequestParam("status") String status)
 	{
