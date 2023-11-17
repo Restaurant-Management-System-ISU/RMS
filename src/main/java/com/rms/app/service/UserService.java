@@ -40,6 +40,15 @@ public interface UserService {
 
 	int saveTable(Tables table);
 
+	void saveOrder(Order order);
+	
 	void cancelOrder(Long id);
+
+
+
+	
+
+
+
 
 }
