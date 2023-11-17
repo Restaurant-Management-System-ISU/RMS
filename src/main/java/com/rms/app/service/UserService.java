@@ -41,6 +41,8 @@ public interface UserService {
 	int saveTable(Tables table);
 
 	void saveOrder(Order order);
+
+	List<Order> getCustomerOrders(String email);
 	
 	void cancelOrder(Long id);
 

@@ -256,7 +256,11 @@ public class UserServiceImpl implements UserService{
 		
 	}
 
-	
+	@Override
+	public List<Order> getCustomerOrders(String email) {
+		// TODO Auto-generated method stub
+		return orderRepo.findAll().stream().filter(o -> o.getEmail().equals(email)).collect(Collectors.toList());
+	}
 	
 	
 
