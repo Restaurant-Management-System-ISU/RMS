@@ -2,6 +2,7 @@ package com.rms.app.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -325,7 +326,14 @@ public class CustomerController {
 		return "redirect:/customer";
 	}
 	
+	@PostMapping("/cancelOrder/{id}")
+	public String cancelOrder(@PathVariable(name="id") Long id)
+	{
+		userService.cancelOrder(id);
+		
+		return "redirect:/orders";
+	}
+	
 	
 }
 
-}
