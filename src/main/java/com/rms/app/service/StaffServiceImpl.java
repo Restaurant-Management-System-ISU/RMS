@@ -1,16 +1,19 @@
 package com.rms.app.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rms.app.dao.MenuRepo;
+import com.rms.app.dao.OrderRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
@@ -27,6 +30,9 @@ public class StaffServiceImpl implements StaffService{
 	
 	@Autowired
 	private TablesRepo tableRepo;
+	
+	@Autowired
+	private OrderRepo orderRepo;
 
 	@Override
 	public int saveStaff(Staff staff) {
@@ -57,6 +63,27 @@ public class StaffServiceImpl implements StaffService{
 	public void deleteReservation(Long id) {
 		// TODO Auto-generated method stub
 		tableRepo.deleteById(id);
+		
+	}
+
+	@Override
+	public List<Order> getAllOrders() {
+		// TODO Auto-generated method stub
+		return orderRepo.findAll().stream().filter(o -> o.getStatus().equals("ordered")).collect(Collectors.toList());
+	}
+
+	@Override
+	public void confirmOrder(Long id) {
+		// TODO Auto-generated method stub
+		List<Order> order = orderRepo.findAll().stream().filter(o -> o.getId().equals(id)).collect(Collectors.toList());
+				
+			
+		
+		if(order.size() == 1) {
+			Order o = order.get(0);
+			o.setStatus("confirmed");
+			orderRepo.save(o);
+		}
 		
 	}
 
