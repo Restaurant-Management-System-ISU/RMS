@@ -130,6 +130,14 @@ public class StaffController {
 		
 		return "redirect:/viewreservations";
 	}
+
+	@PostMapping("/updateOrderStatus/{id}")
+	public String updateOrderStatus(@PathVariable(name="id") Long id, @RequestParam("status") String status)
+	{
+		staffService.updateOrderStatus(id, status);
+		
+		return "redirect:/updatestatus";
+	}
 	
 	
 }
