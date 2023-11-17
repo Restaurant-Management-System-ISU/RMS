@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 
@@ -39,6 +40,6 @@ public interface UserService {
 
 	int saveTable(Tables table);
 
-
+	void cancelOrder(Long id);
 
 }

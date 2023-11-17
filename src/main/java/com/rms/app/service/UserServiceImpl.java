@@ -13,6 +13,7 @@ import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
@@ -235,6 +236,13 @@ public class UserServiceImpl implements UserService{
 			return 0;
 		}
 	}
+	@Override
+	public void cancelOrder(Long id) {
+		// TODO Auto-generated method stub
+		orderRepo.deleteById(id);
+		
+	}
+
 
 	
 	
