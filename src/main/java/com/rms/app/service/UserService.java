@@ -42,7 +42,8 @@ public interface UserService {
 
 	void saveOrder(Order order);
 
-	
+	void cancelOrder(Long id);
+
 
 
 

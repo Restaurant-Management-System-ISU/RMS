@@ -240,6 +240,13 @@ public class UserServiceImpl implements UserService{
 			return 0;
 		}
 	}
+	@Override
+	public void cancelOrder(Long id) {
+		// TODO Auto-generated method stub
+		orderRepo.deleteById(id);
+		
+	}
+
 
 	@Override
 	public void saveOrder(Order order) {
