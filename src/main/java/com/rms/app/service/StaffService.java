@@ -26,6 +26,9 @@ public interface StaffService {
 
 	void confirmOrder(Long id);
 
+	void updateOrderStatus(Long id, String status);
+
+	
 
 
 
