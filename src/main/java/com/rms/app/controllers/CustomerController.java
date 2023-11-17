@@ -248,6 +248,27 @@ public class CustomerController {
 		}
 		
 	}
+
+	@GetMapping("/placeOrder")
+	public String placeOrder(Model model, HttpSession session) {
+		
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		Order order = new Order();
+
+		model.addAttribute("order", order);
+		
+		return "customer/payment";
+		
+	}
+
 		@PostMapping("makePayment")
 	public String makePayment(@ModelAttribute("order") Order order,HttpSession session, Model model )
 	{
