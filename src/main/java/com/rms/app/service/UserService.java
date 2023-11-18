@@ -42,15 +42,6 @@ public interface UserService {
 
 	void saveOrder(Order order);
 
-	List<Order> getCustomerOrders(String email);
-	
-	void cancelOrder(Long id);
-
-
-
-	
-
-
 
 
 }
