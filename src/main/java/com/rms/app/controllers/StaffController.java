@@ -167,6 +167,15 @@ public class StaffController {
 		return "redirect:/confirmorders";
 	}
 
+	@PostMapping("/cancellOrder/{id}")
+	public String cancellOrder(@PathVariable(name="id") Long id)
+	{
+		staffService.cancellOrder(id);
+		
+		return "redirect:/confirmorders";
+	}
+
+
 	@PostMapping("/updateOrderStatus/{id}")
 	public String updateOrderStatus(@PathVariable(name="id") Long id, @RequestParam("status") String status)
 	{

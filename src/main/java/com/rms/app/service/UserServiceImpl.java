@@ -240,12 +240,6 @@ public class UserServiceImpl implements UserService{
 			return 0;
 		}
 	}
-	@Override
-	public void cancelOrder(Long id) {
-		// TODO Auto-generated method stub
-		orderRepo.deleteById(id);
-		
-	}
 
 
 	@Override
@@ -260,6 +254,13 @@ public class UserServiceImpl implements UserService{
 	public List<Order> getCustomerOrders(String email) {
 		// TODO Auto-generated method stub
 		return orderRepo.findAll().stream().filter(o -> o.getEmail().equals(email)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void cancelOrder(Long id) {
+		// TODO Auto-generated method stub
+		orderRepo.deleteById(id);
+		
 	}
 
 

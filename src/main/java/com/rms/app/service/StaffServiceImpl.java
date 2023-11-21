@@ -88,6 +88,22 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
+	public void cancellOrder(Long id) {
+		// TODO Auto-generated method stub
+		
+		List<Order> order = orderRepo.findAll().stream().filter(o -> o.getId().equals(id)).collect(Collectors.toList());
+				
+			
+		
+		if(order.size() == 1) {
+			Order o = order.get(0);
+			o.setStatus("cancelled");
+			orderRepo.save(o);
+		}
+		
+	}
+
+	@Override
 	public void updateOrderStatus(Long id, String status) {
 		// TODO Auto-generated method stub
 		
