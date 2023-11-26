@@ -5,6 +5,7 @@ import java.util.List;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
+import com.rms.app.model.Review;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 
@@ -45,6 +46,8 @@ public interface UserService {
 	List<Order> getCustomerOrders(String email);
 
 	void cancelOrder(Long id);
+
+	void saveReview(Review review);
 
 
 

@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 import com.rms.app.dao.CartRepo;
 import com.rms.app.dao.MenuRepo;
 import com.rms.app.dao.OrderRepo;
+import com.rms.app.dao.ReviewRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
+import com.rms.app.model.Review;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
@@ -260,6 +262,22 @@ public class UserServiceImpl implements UserService{
 	public void cancelOrder(Long id) {
 		// TODO Auto-generated method stub
 		orderRepo.deleteById(id);
+		
+	}
+
+	@Override
+	public void saveReview(Review review) {
+		// TODO Auto-generated method stub
+		reviewRepo.save(review);
+		List<Order> order = orderRepo.findAll().stream().filter(o -> o.getId().equals(Long.parseLong(review.getOrderId()))).collect(Collectors.toList());
+				
+			
+		
+		if(order.size() == 1) {
+			Order o = order.get(0);
+			o.setStatus("reviewed");
+			orderRepo.save(o);
+		}
 		
 	}
 
