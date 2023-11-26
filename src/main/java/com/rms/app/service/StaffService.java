@@ -30,6 +30,10 @@ public interface StaffService {
 	
 	void updateOrderStatus(Long id, String status);
 
+	List<Bill> getStartedBills();
+
+	List<Bill> getBill(String tableName);
+
 	
 
 

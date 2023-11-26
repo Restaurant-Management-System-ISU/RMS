@@ -119,6 +119,18 @@ public class StaffServiceImpl implements StaffService{
 		
 	}
 
+	@Override
+	public List<Bill> getStartedBills() {
+		// TODO Auto-generated method stub
+		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started")).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Bill> getBill(String tableName) {
+		// TODO Auto-generated method stub
+		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started") && b.getTableName().equals(tableName)).collect(Collectors.toList());
+	}
+
 	
 	
 
