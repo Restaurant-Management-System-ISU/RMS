@@ -26,7 +26,13 @@ public interface StaffService {
 
 	void confirmOrder(Long id);
 
+	void cancellOrder(Long id);
+	
 	void updateOrderStatus(Long id, String status);
+
+	List<Bill> getStartedBills();
+
+	List<Bill> getBill(String tableName);
 
 	
 

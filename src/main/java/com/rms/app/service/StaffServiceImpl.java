@@ -88,6 +88,22 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
+	public void cancellOrder(Long id) {
+		// TODO Auto-generated method stub
+		
+		List<Order> order = orderRepo.findAll().stream().filter(o -> o.getId().equals(id)).collect(Collectors.toList());
+				
+			
+		
+		if(order.size() == 1) {
+			Order o = order.get(0);
+			o.setStatus("cancelled");
+			orderRepo.save(o);
+		}
+		
+	}
+
+	@Override
 	public void updateOrderStatus(Long id, String status) {
 		// TODO Auto-generated method stub
 		
@@ -101,6 +117,18 @@ public class StaffServiceImpl implements StaffService{
 			orderRepo.save(o);
 		}
 		
+	}
+
+	@Override
+	public List<Bill> getStartedBills() {
+		// TODO Auto-generated method stub
+		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started")).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Bill> getBill(String tableName) {
+		// TODO Auto-generated method stub
+		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started") && b.getTableName().equals(tableName)).collect(Collectors.toList());
 	}
 
 	

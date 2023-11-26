@@ -325,6 +325,33 @@ public class CustomerController {
 		
 		return "redirect:/customer";
 	}
+
+	@GetMapping("/orders")
+	public String orders(Model model, HttpSession session) {
+		
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		List<Order> orders = userService.getCustomerOrders(userdata.getEmail());
+		
+		if(orders.size() > 0 ) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+
+		model.addAttribute("orders", orders);
+		
+		return "customer/orders";
+		
+	}
 	
 	@PostMapping("/cancelOrder/{id}")
 	public String cancelOrder(@PathVariable(name="id") Long id)
