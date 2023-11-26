@@ -2,6 +2,7 @@ package com.rms.app.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
@@ -246,4 +248,119 @@ public class CustomerController {
 		}
 		
 	}
+
+	@GetMapping("/placeOrder")
+	public String placeOrder(Model model, HttpSession session) {
+		
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		Order order = new Order();
+
+		model.addAttribute("order", order);
+		
+		return "customer/payment";
+		
+	}
+
+		@PostMapping("makePayment")
+	public String makePayment(@ModelAttribute("order") Order order,HttpSession session, Model model )
+	{
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		List<Cart> cart =userService.getUserCart(userdata.getEmail());
+		
+		StringJoiner name = new StringJoiner(",");
+		StringJoiner price = new StringJoiner(",");
+		StringJoiner quantity = new StringJoiner(",");
+		StringJoiner totalCost = new StringJoiner(",");
+		
+		 
+		int finalCost = 0;
+		
+		for(int i=0;i<cart.size(); i++) {
+			
+			name.add(cart.get(i).getName());
+			
+			price.add(cart.get(i).getPrice());
+			
+			quantity.add(cart.get(i).getQuantity());
+			
+			
+			
+			totalCost.add(cart.get(i).getTotalPrice());
+			
+			finalCost = finalCost + Integer.parseInt(cart.get(i).getTotalPrice());
+		}
+		
+		order.setName(name.toString());
+		order.setPrice(price.toString());
+		order.setQuantity(quantity.toString());
+		order.setTotalCost(totalCost.toString());
+		order.setEmail(userdata.getEmail());
+		order.setFinalBill(String.valueOf(finalCost));
+		order.setStatus("ordered");
+		
+		
+		
+		
+		
+		userService.saveOrder(order);
+		
+		
+		
+		
+		return "redirect:/customer";
+	}
+
+	@GetMapping("/orders")
+	public String orders(Model model, HttpSession session) {
+		
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		List<Order> orders = userService.getCustomerOrders(userdata.getEmail());
+		
+		if(orders.size() > 0 ) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+
+		model.addAttribute("orders", orders);
+		
+		return "customer/orders";
+		
+	}
+	
+	@PostMapping("/cancelOrder/{id}")
+	public String cancelOrder(@PathVariable(name="id") Long id)
+	{
+		userService.cancelOrder(id);
+		
+		return "redirect:/orders";
+	}
+	
+	
 }
+

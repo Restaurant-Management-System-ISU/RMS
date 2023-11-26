@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
+import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
 import com.rms.app.service.StaffService;
@@ -48,7 +49,7 @@ public class StaffController {
 
 		return "staff/welcomestaff";
 	}
-
+	
 	@GetMapping("/staffprofile")
 	public String getStaffProfile(@ModelAttribute("staff") Staff staff, Model model, HttpSession session)
 	{
@@ -94,6 +95,94 @@ public class StaffController {
 			return "home/error";
 	}
 	
+	@GetMapping("/viewreservations")
+	public String viewreservations(@ModelAttribute("table") Tables table, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+		 
+		List<Tables> reservs = staffService.getCustomerReservations();
+		int rSize = reservs.size();
+		if(rSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("reservations", reservs);
+
+		return "staff/viewreservations";
+	}
+	
+	@PostMapping("/deleteReservation/{id}")
+	public String deleteReservation(@PathVariable(name="id") Long id)
+	{
+		staffService.deleteReservation(id);
+		
+		return "redirect:/viewreservations";
+	}
+
+	@GetMapping("/confirmorders")
+	public String confirmorders(@ModelAttribute("order") Order order, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+		 
+		List<Order> orders = staffService.getAllOrders();
+		int oSize = orders.size();
+		if(oSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("orders", orders);
+
+		return "staff/confirmorders";
+	}
+	
+	@PostMapping("/confirmOrder/{id}")
+	public String confirmOrder(@PathVariable(name="id") Long id)
+	{
+		staffService.confirmOrder(id);
+		
+		return "redirect:/confirmorders";
+	}
+
+	@PostMapping("/cancellOrder/{id}")
+	public String cancellOrder(@PathVariable(name="id") Long id)
+	{
+		staffService.cancellOrder(id);
+		
+		return "redirect:/confirmorders";
+	}
+
+
+	@PostMapping("/updateOrderStatus/{id}")
+	public String updateOrderStatus(@PathVariable(name="id") Long id, @RequestParam("status") String status)
+	{
+		staffService.updateOrderStatus(id, status);
+		
+		return "redirect:/updatestatus";
+	}
 	
 	
 }
