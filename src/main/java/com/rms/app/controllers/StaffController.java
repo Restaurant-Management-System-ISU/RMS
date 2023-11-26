@@ -213,4 +213,20 @@ public class StaffController {
 		return "staff/bills";
 	}
 	
+	@PostMapping("/getBill")
+	public String getBill(Model model, HttpSession session, @RequestParam("tableName") String tableName) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("sessionMessages", messages);
+        List<Bill> bills = staffService.getBill(tableName);
+        model.addAttribute("bills", bills);
+		return "staff/bills";
+	}
+	
 }
