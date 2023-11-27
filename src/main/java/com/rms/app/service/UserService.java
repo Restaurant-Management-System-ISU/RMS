@@ -49,6 +49,8 @@ public interface UserService {
 
 	void saveReview(Review review);
 
+	List<Menu> filterMenu(String category, String type, String vegOrNonVeg);
+
 	Order getOrder(Long id);
 
 
