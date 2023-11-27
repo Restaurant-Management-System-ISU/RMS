@@ -7,11 +7,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rms.app.dao.BillRepo;
 import com.rms.app.dao.MenuRepo;
 import com.rms.app.dao.OrderRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
+import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
 import com.rms.app.model.Staff;

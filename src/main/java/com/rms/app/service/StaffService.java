@@ -2,6 +2,7 @@ package com.rms.app.service;
 
 import java.util.List;
 
+import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
 import com.rms.app.model.Staff;

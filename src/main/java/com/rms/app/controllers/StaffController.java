@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Tables;
@@ -183,6 +184,49 @@ public class StaffController {
 		
 		return "redirect:/updatestatus";
 	}
+
+	@GetMapping("/bills")
+	public String bills(@ModelAttribute("bill") Bill bill, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+		 
+		List<Bill> bills = staffService.getStartedBills();
+		int oSize = bills.size();
+		if(oSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("bills", bills);
+
+		return "staff/bills";
+	}
 	
+	@PostMapping("/getBill")
+	public String getBill(Model model, HttpSession session, @RequestParam("tableName") String tableName) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("sessionMessages", messages);
+        List<Bill> bills = staffService.getBill(tableName);
+        model.addAttribute("bills", bills);
+		return "staff/bills";
+	}
 	
 }

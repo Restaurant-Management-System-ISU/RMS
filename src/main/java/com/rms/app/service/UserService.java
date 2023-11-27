@@ -44,9 +44,6 @@ public interface UserService {
 	
 	List<Order> getCustomerOrders(String email);
 
-	void cancelOrder(Long id);
-
-
 
 
 }
