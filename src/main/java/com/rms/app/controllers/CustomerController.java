@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
+import com.rms.app.model.Review;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
@@ -357,6 +358,27 @@ public class CustomerController {
 	public String cancelOrder(@PathVariable(name="id") Long id)
 	{
 		userService.cancelOrder(id);
+		
+		return "redirect:/orders";
+	}
+
+	@PostMapping("/addReview/{id}")
+	public String addReview(@PathVariable(name="id") Long id,Model model, HttpSession session, @RequestParam("rating") String rating, @RequestParam("feedback") String feedback)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		Review review = new Review();
+		review.setCustomerEmail(userdata.getEmail());
+		review.setOrderId(String.valueOf(id));
+		review.setRating(rating);
+		review.setFeedback(feedback);
+		userService.saveReview(review);
 		
 		return "redirect:/orders";
 	}
