@@ -282,6 +282,13 @@ public class UserServiceImpl implements UserService{
 		
 	}
 
+	@Override
+	public Order getOrder(Long id) {
+		// TODO Auto-generated method stub
+		
+		return orderRepo.getById(id);
+	}
+
 
 	
 
