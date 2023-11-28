@@ -31,6 +31,9 @@ public interface StaffService {
 	
 	void updateOrderStatus(Long id, String status);
 
+	List<Order> getConfirmedOrders();
+
+
 	List<Bill> getStartedBills();
 
 	List<Bill> getBill(String tableName);
