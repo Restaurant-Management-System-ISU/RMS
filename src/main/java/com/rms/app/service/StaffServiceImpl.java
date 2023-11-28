@@ -36,6 +36,10 @@ public class StaffServiceImpl implements StaffService{
 	@Autowired
 	private OrderRepo orderRepo;
 
+		
+	@Autowired
+	private BillRepo billRepo;
+
 	@Override
 	public int saveStaff(Staff staff) {
 		// TODO Auto-generated method stub
@@ -133,6 +137,19 @@ public class StaffServiceImpl implements StaffService{
 		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started") && b.getTableName().equals(tableName)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Menu getMenuById(String menuItem) {
+		// TODO Auto-generated method stub
+		List<Menu> menuList = menuRepo.findAll().stream().filter(m -> m.getId().equals(Long.parseLong(menuItem))).collect(Collectors.toList());
+		return menuList.get(0);
+	}
+
+	@Override
+	public void saveAssign(Bill bill) {
+		// TODO Auto-generated method stub
+		billRepo.save(bill);
+		
+	}
 	
 	
 

@@ -35,6 +35,10 @@ public interface StaffService {
 
 	List<Bill> getBill(String tableName);
 
+	Menu getMenuById(String menuItem);
+
+	void saveAssign(Bill bill);
+
 	
 
 
