@@ -382,7 +382,22 @@ public class CustomerController {
 		
 		return "redirect:/orders";
 	}
-	
+	@PostMapping("/applyFilters")
+	public String applyFilters(Model model, HttpSession session, @RequestParam("category") String category,
+			 @RequestParam("type") String type, @RequestParam("vegOrNonVeg") String vegOrNonVeg) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+        model.addAttribute("sessionMessages", messages);
+        List<Menu> menus = userService.filterMenu(category,type, vegOrNonVeg);
+        model.addAttribute("menus", menus);
+		return "customer/welcomecustomer";
+	}
 	
 }
 
