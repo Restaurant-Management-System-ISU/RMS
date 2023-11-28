@@ -126,6 +126,12 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
+	public List<Order> getConfirmedOrders() {
+		// TODO Auto-generated method stub
+		return orderRepo.findAll().stream().filter(o -> o.getStatus().equals("preparing") || o.getStatus().equals("confirmed") || o.getStatus().equals("ready") || o.getStatus().equals("completed")).collect(Collectors.toList());
+	}
+
+	@Override
 	public List<Bill> getStartedBills() {
 		// TODO Auto-generated method stub
 		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started")).collect(Collectors.toList());
