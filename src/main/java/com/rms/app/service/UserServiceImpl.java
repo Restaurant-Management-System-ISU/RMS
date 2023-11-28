@@ -283,6 +283,23 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public List<Menu> filterMenu(String category, String type, String vegOrNonVeg) {
+		
+		if(category.isEmpty() && type.isEmpty() && vegOrNonVeg.isEmpty()) {
+			return  menuRepo.findAll();
+		}
+		
+		List<Menu> menus = menuRepo.findAll();
+		
+		List<Menu> filteredMenus = menus.stream().filter(menu -> menu.getCategory().equals(category) || menu.getType().equals(type) || menu.getVegOrNonVeg().equals(vegOrNonVeg)).collect(Collectors.toList());	
+		
+		
+		
+		return filteredMenus.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(Menu::getId))),
+                ArrayList::new));
+	}
+	
+	@Override
 	public Order getOrder(Long id) {
 		// TODO Auto-generated method stub
 		
