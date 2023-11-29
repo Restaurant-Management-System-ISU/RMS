@@ -306,6 +306,29 @@ public class UserServiceImpl implements UserService{
 		return orderRepo.getById(id);
 	}
 
+	@Override
+	public List<Menu> getSeasonalMenu() {
+		// TODO Auto-generated method stub
+		return menuRepo.findAll().stream().filter(m -> !m.getSeason().equals("normal")).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<Menu> filterSeasonMenu(String season) {
+		
+		if(season.isEmpty() ) {
+			return  menuRepo.findAll().stream().filter(m -> !m.getSeason().equals("normal")).collect(Collectors.toList());
+		}
+		
+		List<Menu> menus = menuRepo.findAll();
+		
+		List<Menu> filteredMenus = menus.stream().filter(menu -> menu.getSeason().equals(season)).collect(Collectors.toList());	
+		
+		
+		
+		return filteredMenus.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(Menu::getId))),
+                ArrayList::new));
+	}
+
 
 	
 
