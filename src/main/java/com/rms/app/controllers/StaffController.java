@@ -256,5 +256,54 @@ public class StaffController {
         model.addAttribute("bills", bills);
 		return "staff/bills";
 	}
+
+	@GetMapping("/assign")
+	public String assign(Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        List<Menu> menus = adminService.getAllMenu();
+        Bill bill = new Bill();
+
+	    model.addAttribute("bill", bill);
+	    model.addAttribute("menus", menus);
+
+		return "staff/assign";
+	}
+	
+	
+	@PostMapping("/assignOrder")
+	public String assignOrder(@ModelAttribute("bill") Bill bill, Model model, HttpSession session, @RequestParam("menuItem") String menuItem)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        System.out.println("----"+messages);
+        
+		Menu menu = staffService.getMenuById(menuItem);
+		bill.setName(menu.getName());
+		bill.setEmail(staffModel.getEmail());
+		bill.setPrice(menu.getPrice());
+		int total = Integer.parseInt(menu.getPrice()) * Integer.parseInt(bill.getQuantity());
+		bill.setFinalBill(String.valueOf(total));
+		bill.setStatus("started");
+		
+			staffService.saveAssign(bill);
+		
+			return "redirect:/staff";
+		
+	}
+	
 	
 }
