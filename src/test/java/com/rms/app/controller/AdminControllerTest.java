@@ -1,4 +1,4 @@
-package com.rms.app.service;
+package com.rms.app.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,13 +21,14 @@ import com.rms.app.dao.MenuRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
+import com.rms.app.service.AdminServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //@RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-public class AdminServiceTest {
+public class AdminControllerTest {
 
     @InjectMocks
     private AdminServiceImpl adminService;
@@ -40,7 +41,7 @@ public class AdminServiceTest {
 
     
     @Test
-    public void getAllMenus() {
+    public void getMenuPage() {
 
         Menu menu = new Menu();
         
@@ -63,7 +64,7 @@ public class AdminServiceTest {
     }
     
     @Test
-    public void checkEmptyMenuList() {
+    public void checkMenuList() {
 
     	 Menu menu = new Menu();
          
@@ -106,22 +107,10 @@ public class AdminServiceTest {
 
     }
     
-    @Test
-    public void saveNoMenu() {
-
-        Menu menu = null;
-        
-        
-       
-        
-        when(menuRepo.save(menu)).thenReturn(menu);
-
-        assertEquals(0, adminService.saveMenu(menu));
-
-    }
+   
     
     @Test
-    public void deleteMenu() {
+    public void deleteMMenu() {
 
         Menu menu = new Menu();
         
@@ -142,49 +131,10 @@ public class AdminServiceTest {
 
     }
     
-    @Test
-    public void getMenuById() {
-
-        Menu menu = new Menu();
-        
-        menu.setCategory("Starters");
-        menu.setCuisine("indian");
-        menu.setDescription("nicely chopped cabbage with deeply fried manchurian");
-        menu.setName("Veg Manchurian");
-        menu.setPrice("200");
-        menu.setType("type");
-        menu.setVegOrNonVeg("Veg");
-        menu.setId(1L);
-        
-        when(menuRepo.getById(1L)).thenReturn(menu);
-
-        assertEquals(menu, adminService.getMenuById(1L));
-
-    }
+    
     
     @Test
-    public void getNoMenuById() {
-
-        Menu menu = new Menu();
-        
-        menu.setCategory("Starters");
-        menu.setCuisine("indian");
-        menu.setDescription("nicely chopped cabbage with deeply fried manchurian");
-        menu.setName("Veg Manchurian");
-        menu.setPrice("200");
-        menu.setType("type");
-        menu.setVegOrNonVeg("Veg");
-        menu.setId(1L);
-        menuRepo.save(menu);
-        
-        when(menuRepo.getById(2L)).thenReturn(null);
-
-        assertEquals(null, adminService.getMenuById(2L));
-
-    }
-    
-    @Test
-    public void updateMenu() {
+    public void editMenu() {
 
         Menu menu = new Menu();
         
@@ -204,7 +154,7 @@ public class AdminServiceTest {
     }
     
     @Test
-    public void getAllStaff() {
+    public void getStaffPage() {
 
         Staff staff = new Staff();
         

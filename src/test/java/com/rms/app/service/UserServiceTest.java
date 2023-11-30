@@ -17,9 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.rms.app.dao.MenuRepo;
+import com.rms.app.dao.OrderRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Order;
 import com.rms.app.model.User;
 
 import java.util.ArrayList;
@@ -36,29 +38,26 @@ public class UserServiceTest {
     private UserRepo userRepo;
 
     @Mock
-    private MenuRepo menuRepo;
+    private OrderRepo orderRepo;
 
-    
     @Test
-    public void getAllMenu() {
+    public void getAllOrders() {
 
-        Menu menu = new Menu();
+        Order order = new Order();
         
-        menu.setCategory("Starters");
-        menu.setCuisine("indian");
-        menu.setDescription("nicely chopped cabbage with deeply fried manchurian");
-        menu.setName("Veg Manchurian");
-        menu.setPrice("200");
-        menu.setType("type");
-        menu.setVegOrNonVeg("Veg");
+       order.setCardName("cardname");
+       order.setCardNumber("1234");
+       order.setCvv("123");
+       order.setEmail("customer@gmail.com");
+       order.setFinalBill("1234");
         
         
-        List<Menu> menus = new ArrayList<>();
-        menus.add(menu);
+        List<Order> orders = new ArrayList<>();
+        orders.add(order);
         
-        when(menuRepo.findAll()).thenReturn(menus);
+        when(orderRepo.findAll()).thenReturn(orders);
 
-        assertEquals(menus, userService.getAllMenu());
+        assertEquals(orders, userService.getCustomerOrders("customer@gmail.com"));
 
     }
     
