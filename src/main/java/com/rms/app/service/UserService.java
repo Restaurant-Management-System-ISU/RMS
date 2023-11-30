@@ -53,7 +53,9 @@ public interface UserService {
 
 	Order getOrder(Long id);
 
+	List<Menu> getSeasonalMenu();
 
+	List<Menu> filterSeasonMenu(String season);
 
 
 }

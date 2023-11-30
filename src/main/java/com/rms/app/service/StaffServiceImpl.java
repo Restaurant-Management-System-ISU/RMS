@@ -36,6 +36,10 @@ public class StaffServiceImpl implements StaffService{
 	@Autowired
 	private OrderRepo orderRepo;
 
+		
+	@Autowired
+	private BillRepo billRepo;
+
 	@Override
 	public int saveStaff(Staff staff) {
 		// TODO Auto-generated method stub
@@ -122,6 +126,12 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
+	public List<Order> getConfirmedOrders() {
+		// TODO Auto-generated method stub
+		return orderRepo.findAll().stream().filter(o -> o.getStatus().equals("preparing") || o.getStatus().equals("confirmed") || o.getStatus().equals("ready") || o.getStatus().equals("completed")).collect(Collectors.toList());
+	}
+
+	@Override
 	public List<Bill> getStartedBills() {
 		// TODO Auto-generated method stub
 		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started")).collect(Collectors.toList());
@@ -133,6 +143,19 @@ public class StaffServiceImpl implements StaffService{
 		return billRepo.findAll().stream().filter(b -> b.getStatus().equals("started") && b.getTableName().equals(tableName)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Menu getMenuById(String menuItem) {
+		// TODO Auto-generated method stub
+		List<Menu> menuList = menuRepo.findAll().stream().filter(m -> m.getId().equals(Long.parseLong(menuItem))).collect(Collectors.toList());
+		return menuList.get(0);
+	}
+
+	@Override
+	public void saveAssign(Bill bill) {
+		// TODO Auto-generated method stub
+		billRepo.save(bill);
+		
+	}
 	
 	
 

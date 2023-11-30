@@ -185,6 +185,34 @@ public class StaffController {
 		return "redirect:/updatestatus";
 	}
 
+	@GetMapping("/updatestatus")
+	public String updatestatus(@ModelAttribute("order") Order order, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+		 
+		List<Order> orders = staffService.getConfirmedOrders();
+		int oSize = orders.size();
+		if(oSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("orders", orders);
+
+		return "staff/updatestatus";
+	}
+
 	@GetMapping("/bills")
 	public String bills(@ModelAttribute("bill") Bill bill, Model model, HttpSession session)
 	{
@@ -228,5 +256,54 @@ public class StaffController {
         model.addAttribute("bills", bills);
 		return "staff/bills";
 	}
+
+	@GetMapping("/assign")
+	public String assign(Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        List<Menu> menus = adminService.getAllMenu();
+        Bill bill = new Bill();
+
+	    model.addAttribute("bill", bill);
+	    model.addAttribute("menus", menus);
+
+		return "staff/assign";
+	}
+	
+	
+	@PostMapping("/assignOrder")
+	public String assignOrder(@ModelAttribute("bill") Bill bill, Model model, HttpSession session, @RequestParam("menuItem") String menuItem)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        System.out.println("----"+messages);
+        
+		Menu menu = staffService.getMenuById(menuItem);
+		bill.setName(menu.getName());
+		bill.setEmail(staffModel.getEmail());
+		bill.setPrice(menu.getPrice());
+		int total = Integer.parseInt(menu.getPrice()) * Integer.parseInt(bill.getQuantity());
+		bill.setFinalBill(String.valueOf(total));
+		bill.setStatus("started");
+		
+			staffService.saveAssign(bill);
+		
+			return "redirect:/staff";
+		
+	}
+	
 	
 }
