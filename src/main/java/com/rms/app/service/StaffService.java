@@ -6,6 +6,7 @@ import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
 import com.rms.app.model.Staff;
+import com.rms.app.model.Stock;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 
@@ -33,6 +34,9 @@ public interface StaffService {
 
 	List<Order> getConfirmedOrders();
 
+	List<Stock> getAllStock();
+
+	void saveStock(Stock stock);
 
 	List<Bill> getStartedBills();
 
