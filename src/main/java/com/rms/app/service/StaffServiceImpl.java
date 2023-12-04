@@ -17,6 +17,7 @@ import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
 import com.rms.app.model.Staff;
+import com.rms.app.model.Stock;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 
@@ -36,7 +37,9 @@ public class StaffServiceImpl implements StaffService{
 	@Autowired
 	private OrderRepo orderRepo;
 
-		
+	@Autowired
+	private StockRepo stockRepo;
+
 	@Autowired
 	private BillRepo billRepo;
 
@@ -129,6 +132,19 @@ public class StaffServiceImpl implements StaffService{
 	public List<Order> getConfirmedOrders() {
 		// TODO Auto-generated method stub
 		return orderRepo.findAll().stream().filter(o -> o.getStatus().equals("preparing") || o.getStatus().equals("confirmed") || o.getStatus().equals("ready") || o.getStatus().equals("completed")).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Stock> getAllStock() {
+		// TODO Auto-generated method stub
+		return stockRepo.findAll();
+	}
+
+	@Override
+	public void saveStock(Stock stock) {
+		// TODO Auto-generated method stub
+		stockRepo.save(stock);
+		
 	}
 
 	@Override
