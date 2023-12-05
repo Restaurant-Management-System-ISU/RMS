@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
+import com.rms.app.model.Stock;
 import com.rms.app.model.Tables;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
@@ -211,6 +212,40 @@ public class StaffController {
 	    model.addAttribute("orders", orders);
 
 		return "staff/updatestatus";
+	}
+
+	@GetMapping("/restock")
+	public String restock(@ModelAttribute("stock") Stock stock, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Stock stocks = new Stock();
+        List<Stock> stockss = staffService.getAllStock();
+
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
+
+	    model.addAttribute("stock", stocks);
+	    model.addAttribute("stocks", stockss);
+
+		return "staff/restock";
+	}
+	
+	
+	@PostMapping("/saveStock")
+	public String saveStock(@ModelAttribute("stock") Stock stock, Model model, HttpSession session)
+	{
+			staffService.saveStock(stock);
+		
+			return "redirect:/staff";
+		
 	}
 
 	@GetMapping("/bills")
