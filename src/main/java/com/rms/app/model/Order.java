@@ -26,6 +26,7 @@ public class Order {
 	private String quantity;
 	private String totalCost;
 	private String finalBill;
+	private String type;
 	private String cardName;
 	private String cardNumber;
 	private String cvv;
