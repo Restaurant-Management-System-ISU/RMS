@@ -25,6 +25,7 @@ import com.rms.app.model.Menu;
 import com.rms.app.model.Order;
 import com.rms.app.model.Review;
 import com.rms.app.model.Tables;
+import com.rms.app.model.Ticket;
 import com.rms.app.model.User;
 import com.rms.app.service.AdminService;
 import com.rms.app.service.UserService;
@@ -35,9 +36,11 @@ public class CustomerController {
 	
 	@Autowired
 	private UserService userService;
-
+	
 	@Autowired
 	private AdminService adminService;
+	
+	
 
 	@GetMapping("/customer")
 	public String getCustomerWelcomePage(@ModelAttribute("user") User user, Model model, HttpSession session)
@@ -45,10 +48,7 @@ public class CustomerController {
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 
-		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
-		}
+		
         model.addAttribute("sessionMessages", messages);
         
 	List<Menu> menuList = userService.getAllMenu();
@@ -57,6 +57,23 @@ public class CustomerController {
         model.addAttribute("menus", menuList);
 
 		return "customer/welcomecustomer";
+	}
+	
+	@GetMapping("/menus")
+	public String menus(@ModelAttribute("user") User user, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		
+        model.addAttribute("sessionMessages", messages);
+        
+	List<Menu> menuList = userService.getAllMenu();
+		
+        
+        model.addAttribute("menus", menuList);
+
+		return "customer/menu";
 	}
 	
 	@GetMapping("/profile")
@@ -72,6 +89,11 @@ public class CustomerController {
         model.addAttribute("sessionMessages", messages);
         
 		User userModel = userService.getUserByEmail(messages.get(0));
+		
+		if(userModel == null) {
+			model.addAttribute("errormsg", "Guest cannot use Profile");
+			return "home/error";
+		}
 			
 	        
 	        model.addAttribute("user", userModel);
@@ -79,21 +101,7 @@ public class CustomerController {
 		return "customer/profile";
 	}
 	
-	@PostMapping("/updateProfile")
-	public String updateProfile(@ModelAttribute("user") User user, Model model)
-	{
-		System.out.println("save===user");
-		int output =userService.saveUser(user);
-		if(output>0) {
-			return "redirect:/profile";
-		}
-		
-		else {
-			model.addAttribute("errormsg", "Operation failed. Please try again");
-			return "home/error";
-		}
-		
-	}
+	
 	
 	@PostMapping("/deleteProfile/{id}")
 	public String deleteProfile(@PathVariable(name="id") Long id,HttpServletRequest request, Model model)
@@ -101,25 +109,32 @@ public class CustomerController {
 		userService.deleteUser(id);
 		 request.getSession().invalidate();
 		 model.addAttribute("errormsg", "Your Account Deleted Successfully");
-			return "home/error";
+			return "home/error2";
 	}
-
-		@PostMapping("/addToCart/{id}")
+	
+	
+	
+	@PostMapping("/addToCart/{id}")
 	public String addToCart(Model model, HttpSession session, @PathVariable(name="id") Long id, @RequestParam("quantity") String quantity) {
 		
 		
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		String guest = "";
 		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
+			return "redirect:/guest";
 		}
+		else {
+			guest = messages.get(0);
+		}
+		
+
 		Menu menu = adminService.getMenuById(id);
 		Cart cart = new Cart();
 		
 		cart.setCategory(menu.getCategory());
 		cart.setCuisine(menu.getCuisine());
-		cart.setCustomerEmail(messages.get(0));
+		cart.setCustomerEmail(guest);
 		cart.setDescription(menu.getDescription());
 		cart.setName(menu.getName());
 		cart.setType(menu.getType());
@@ -142,12 +157,14 @@ public class CustomerController {
 		
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		String guest = "";
 		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
+			return "redirect:/guest";
 		}
-		User userdata = userService.findUser(messages.get(0));
-		List<Cart> carts = userService.getUserCart(userdata.getEmail());
+		else {
+			guest = messages.get(0);
+		}
+		List<Cart> carts = userService.getUserCart(guest);
 		model.addAttribute("carts", carts);
 		
 		int finalPrice = 0;
@@ -174,7 +191,6 @@ public class CustomerController {
 		
 		model.addAttribute("cartsize", cartSize);
 		System.out.println(carts.size()+"------");
-		model.addAttribute("role", userdata.getUsertype());
 		
 		return "customer/cart";
 		
@@ -190,7 +206,7 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/reservetable")
-	public String getCustomerProfile(@ModelAttribute("table") Tables table, Model model, HttpSession session)
+	public String reservetable(@ModelAttribute("table") Tables table, Model model, HttpSession session)
 	{
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
@@ -202,29 +218,11 @@ public class CustomerController {
         model.addAttribute("sessionMessages", messages);
         
 		User userModel = userService.getUserByEmail(messages.get(0));
-		 
-		Tables tableModel = new Tables();
-			
-	        
-	    model.addAttribute("table", tableModel);
-
-		return "customer/reservetable";
-	}
-
-
-	@GetMapping("/reservetable")
-	public String getCustomerProfile(@ModelAttribute("table") Tables table, Model model, HttpSession session)
-	{
-		@SuppressWarnings("unchecked")
-        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
-
-		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+		
+		if(userModel == null) {
+			model.addAttribute("errormsg", "Guest cannot Book Table");
 			return "home/error";
 		}
-        model.addAttribute("sessionMessages", messages);
-        
-		User userModel = userService.getUserByEmail(messages.get(0));
 		 
 		Tables tableModel = new Tables();
 			
@@ -235,10 +233,25 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/bookTable")
-	public String bookTable(@ModelAttribute("table") Tables table, Model model)
+	public String bookTable(@ModelAttribute("table") Tables table, Model model,HttpSession session)
 	{
 		System.out.println("save===table");
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+		User userModel = userService.getUserByEmail(messages.get(0));
+		table.setCustomerEmail(userModel.getEmail());
 		int output =userService.saveTable(table);
+		
+		
+		
 		if(output>0) {
 			return "redirect:/customer";
 		}
@@ -249,40 +262,50 @@ public class CustomerController {
 		}
 		
 	}
-
+	
 	@GetMapping("/placeOrder")
 	public String placeOrder(Model model, HttpSession session) {
 		
 		
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
-		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
-		}
-		User userdata = userService.findUser(messages.get(0));
+		
 		
 		Order order = new Order();
-
+		List<Cart> cart =userService.getUserCart(messages.get(0));
+		
+		int finalCost = 0;
+		for(int i=0;i<cart.size(); i++) {
+			
+			
+			
+			finalCost = finalCost + Integer.parseInt(cart.get(i).getTotalPrice());
+		}
+		
+		
+		model.addAttribute("isFirst", userService.checkIsFirstOrder(messages.get(0)));
+		model.addAttribute("cost", finalCost);
 		model.addAttribute("order", order);
 		
 		return "customer/payment";
 		
 	}
-
-		@PostMapping("makePayment")
-	public String makePayment(@ModelAttribute("order") Order order,HttpSession session, Model model )
+	
+	@PostMapping("makePayment")
+	public String makePayment(@ModelAttribute("order") Order order,HttpSession session, Model model, @RequestParam("isFirst") String isFirst, @RequestParam("coupon") String coupon)
 	{
 		
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		String guest = "";
 		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
+			return "redirect:/guest";
 		}
-		User userdata = userService.findUser(messages.get(0));
+		else {
+			guest = messages.get(0);
+		}
 		
-		List<Cart> cart =userService.getUserCart(userdata.getEmail());
+		List<Cart> cart =userService.getUserCart(guest);
 		
 		StringJoiner name = new StringJoiner(",");
 		StringJoiner price = new StringJoiner(",");
@@ -290,7 +313,7 @@ public class CustomerController {
 		StringJoiner totalCost = new StringJoiner(",");
 		
 		 
-		int finalCost = 0;
+		double finalCost = 0;
 		
 		for(int i=0;i<cart.size(); i++) {
 			
@@ -307,15 +330,27 @@ public class CustomerController {
 			finalCost = finalCost + Integer.parseInt(cart.get(i).getTotalPrice());
 		}
 		
+		if(isFirst.equals("true") && coupon.equals("FIRSTORDER")) {
+			finalCost = finalCost - finalCost*0.15;
+		}
+		
 		order.setName(name.toString());
 		order.setPrice(price.toString());
 		order.setQuantity(quantity.toString());
 		order.setTotalCost(totalCost.toString());
-		order.setEmail(userdata.getEmail());
+		order.setEmail(guest);
 		order.setFinalBill(String.valueOf(finalCost));
 		order.setStatus("ordered");
 		
+		if(order.getType().equals("cash")) {
+			order.setCardName("cash");
+			order.setCardNumber("cash");
+			order.setCvv("cash");
+		}
 		
+		
+		
+	
 		
 		
 		
@@ -326,7 +361,7 @@ public class CustomerController {
 		
 		return "redirect:/customer";
 	}
-
+	
 	@GetMapping("/orders")
 	public String orders(Model model, HttpSession session) {
 		
@@ -339,7 +374,12 @@ public class CustomerController {
 		}
 		User userdata = userService.findUser(messages.get(0));
 		
-		List<Order> orders = userService.getCustomerOrders(userdata.getEmail());
+		if(userdata == null) {
+			model.addAttribute("errormsg", "Guest cannot access orders");
+			return "home/error";
+		}
+		
+		List<Order> orders = userService.getCustomerOrders(messages.get(0));
 		
 		if(orders.size() > 0 ) {
 			model.addAttribute("flag", 1);
@@ -357,11 +397,18 @@ public class CustomerController {
 	@PostMapping("/cancelOrder/{id}")
 	public String cancelOrder(@PathVariable(name="id") Long id)
 	{
+		Order order = userService.getOrder(id);
+		
+		Notification notification = new Notification();
+		
+		
+		
+		userService.saveNotify(notification);
 		userService.cancelOrder(id);
 		
 		return "redirect:/orders";
 	}
-
+	
 	@PostMapping("/addReview/{id}")
 	public String addReview(@PathVariable(name="id") Long id,Model model, HttpSession session, @RequestParam("rating") String rating, @RequestParam("feedback") String feedback)
 	{
@@ -369,7 +416,7 @@ public class CustomerController {
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 		if(messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
+			return "home/error2";
 		}
 		User userdata = userService.findUser(messages.get(0));
 		
@@ -381,6 +428,71 @@ public class CustomerController {
 		userService.saveReview(review);
 		
 		return "redirect:/orders";
+	}
+	
+	@GetMapping("/help")
+	public String help(@ModelAttribute("ticket") Ticket ticket, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+		User userModel = userService.getUserByEmail(messages.get(0));
+		if(userModel == null) {
+			model.addAttribute("errormsg", "Guest cannot request help");
+			return "home/error";
+		}
+		 
+		Ticket tickett = new Ticket();
+		
+		
+			
+	        
+	    model.addAttribute("ticket", tickett);
+
+		return "customer/help";
+	}
+	
+	@PostMapping("/raiseTicket")
+	public String raiseTicket(@ModelAttribute("ticket") Ticket ticket, Model model,HttpSession session)
+	{
+		System.out.println("save===ticket");
+		
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+		User userModel = userService.getUserByEmail(messages.get(0));
+		
+		if(userModel == null) {
+			model.addAttribute("errormsg", "Guest cannot raise Tickets");
+			return "home/error";
+		}
+		
+		ticket.setCustomerEmail(userModel.getEmail());
+		int output =userService.saveTicket(ticket);
+	
+		
+		
+		if(output>0) {
+			return "redirect:/customer";
+		}
+		
+		else {
+			model.addAttribute("errormsg", "Operation failed. Please try again");
+			return "home/error";
+		}
+		
 	}
 	@PostMapping("/applyFilters")
 	public String applyFilters(Model model, HttpSession session, @RequestParam("category") String category,
