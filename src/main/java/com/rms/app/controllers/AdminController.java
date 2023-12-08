@@ -1,6 +1,7 @@
 package com.rms.app.controller;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.rms.app.model.Menu;
 import com.rms.app.model.Staff;
@@ -67,8 +69,14 @@ public class AdminController {
 	}
 	
 	@PostMapping("/saveMenu")
-	public String saveMenu(@ModelAttribute("menu") Menu menu, Model model, HttpSession session)
+	public String saveMenu(@ModelAttribute("menu") Menu menu, Model model, HttpSession session, @RequestParam("image") MultipartFile itemImage)
 	{
+			try {
+				menu.setPhoto(Base64.getEncoder().encodeToString(itemImage.getBytes()));
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
 			adminService.saveMenu(menu);
 		
 			return "redirect:/menu";
@@ -94,7 +102,7 @@ public class AdminController {
 	}
 	
 	@PostMapping("/updateMenu")
-	public String updateMenu(@ModelAttribute("menu") Menu menu, Model model, HttpSession session)
+	public String updateMenu(@ModelAttribute("menu") Menu menu, Model model, HttpSession session, @RequestParam("image") MultipartFile itemImage)
 	{
 		System.out.println("menu updated");
 		
@@ -106,6 +114,21 @@ public class AdminController {
 			return "home/error";
 		}
         model.addAttribute("sessionMessages", messages);
+       
+        
+        if(!itemImage.getOriginalFilename().isEmpty()) {
+        	try {
+        		
+				menu.setPhoto(Base64.getEncoder().encodeToString(itemImage.getBytes()));
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+        }
+        else {
+        	Menu m = adminService.getMenuById(menu.getId());
+        	menu.setPhoto(m.getPhoto());
+        }
 		
 		adminService.updateMenu(menu);
 		
