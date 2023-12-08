@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Notification;
+import com.rms.app.model.Order;
+import com.rms.app.model.Review;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Stock;
 import com.rms.app.model.Tables;
@@ -35,6 +39,13 @@ public class StaffController {
 	@Autowired
 	private StaffService staffService;
 	
+
+	@Autowired
+	private AdminService adminService;
+	
+	@Autowired
+	private UserService userService;
+	
 	
 
 	@GetMapping("/staff")
@@ -48,6 +59,8 @@ public class StaffController {
 			return "home/error";
 		}
         model.addAttribute("sessionMessages", messages);
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
 
 		return "staff/welcomestaff";
 	}
@@ -65,7 +78,7 @@ public class StaffController {
         model.addAttribute("sessionMessages", messages);
         
 		Staff staffModel = staffService.getStaffByEmail(messages.get(0));
-			
+		model.addAttribute("role", staffModel.getStaffType());
 	        
 	        model.addAttribute("staff", staffModel);
 
@@ -91,10 +104,10 @@ public class StaffController {
 	@PostMapping("/deleteStaffProfile/{id}")
 	public String deleteStaffProfile(@PathVariable(name="id") Long id,HttpServletRequest request, Model model)
 	{
-		staffService.deleteStaff(id);
+		//staffService.deleteStaff(id);
 		 request.getSession().invalidate();
 		 model.addAttribute("errormsg", "Your Account Deleted Successfully");
-			return "home/error";
+			return "home/error2";
 	}
 	
 	@GetMapping("/viewreservations")
@@ -110,6 +123,7 @@ public class StaffController {
         model.addAttribute("sessionMessages", messages);
         
         Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
 		 
 		List<Tables> reservs = staffService.getCustomerReservations();
 		int rSize = reservs.size();
@@ -128,11 +142,23 @@ public class StaffController {
 	@PostMapping("/deleteReservation/{id}")
 	public String deleteReservation(@PathVariable(name="id") Long id)
 	{
+		Notification notification = new Notification();
+		Tables table = staffService.getTableById(id); 
+		
+		notification.setEmail(table.getCustomerEmail());
+		notification.setName(table.getDatetime());
+		notification.setDescription(table.getCustomerEmail()+" cancelled "+table.getName());
+		notification.setStatus("cancelled");
+		notification.setUserType("user");
+		
+		userService.saveNotify(notification);
 		staffService.deleteReservation(id);
+		
+		
 		
 		return "redirect:/viewreservations";
 	}
-
+	
 	@GetMapping("/confirmorders")
 	public String confirmorders(@ModelAttribute("order") Order order, Model model, HttpSession session)
 	{
@@ -146,6 +172,7 @@ public class StaffController {
         model.addAttribute("sessionMessages", messages);
         
         Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
 		 
 		List<Order> orders = staffService.getAllOrders();
 		int oSize = orders.size();
@@ -166,26 +193,89 @@ public class StaffController {
 	{
 		staffService.confirmOrder(id);
 		
+		Notification notification = new Notification();
+		Order order = staffService.getOrderById(id); 
+		
+		notification.setEmail(order.getEmail());
+		notification.setName(order.getName());
+		notification.setDescription("Your Order "+order.getName()+" is confirmed ");
+		notification.setStatus("confirmed");
+		notification.setUserType("user");
+		
+		userService.saveNotify(notification);
+		
+		Notification notification2 = new Notification();
+		
+		notification2.setEmail(order.getEmail());
+		notification2.setName(order.getName());
+		notification2.setDescription("Your Order "+order.getName()+" is confirmed ");
+		notification2.setStatus("confirmed");
+		notification2.setUserType("staf");
+		
+		userService.saveNotify(notification2);
+		
 		return "redirect:/confirmorders";
 	}
-
+	
 	@PostMapping("/cancellOrder/{id}")
 	public String cancellOrder(@PathVariable(name="id") Long id)
 	{
+		Notification notification = new Notification();
+		Order order = staffService.getOrderById(id); 
+		
+		notification.setEmail(order.getEmail());
+		notification.setName(order.getName());
+		notification.setDescription("Your Order "+order.getName()+" is cancelled ");
+		notification.setStatus("cancelled");
+		notification.setUserType("user");
+		
+		userService.saveNotify(notification);
+		
+		Notification notification2 = new Notification();
+		
+		notification2.setEmail(order.getEmail());
+		notification2.setName(order.getName());
+		notification2.setDescription("Your Order "+order.getName()+" is cancelled ");
+		notification2.setStatus("cancelled");
+		notification2.setUserType("staff");
+		
+		userService.saveNotify(notification);
 		staffService.cancellOrder(id);
 		
 		return "redirect:/confirmorders";
 	}
-
-
+	
 	@PostMapping("/updateOrderStatus/{id}")
 	public String updateOrderStatus(@PathVariable(name="id") Long id, @RequestParam("status") String status)
 	{
+		Notification notification = new Notification();
+		Order order = staffService.getOrderById(id); 
+		
+		notification.setEmail(order.getEmail());
+		notification.setName(order.getName());
+		notification.setDescription("Your Order "+order.getName()+" is "+status);
+		notification.setStatus(status);
+		notification.setUserType("user");
+		
+		userService.saveNotify(notification);
+		
+		Notification notification2 = new Notification();
+		
+		notification2.setEmail(order.getEmail());
+		notification2.setName(order.getName());
+		notification2.setDescription("Your Order "+order.getName()+" is "+status);
+		notification2.setStatus(status);
+		notification2.setUserType("staff");
+		
+		userService.saveNotify(notification2);
+		
+		
+		
 		staffService.updateOrderStatus(id, status);
 		
 		return "redirect:/updatestatus";
 	}
-
+	
 	@GetMapping("/updatestatus")
 	public String updatestatus(@ModelAttribute("order") Order order, Model model, HttpSession session)
 	{
@@ -199,6 +289,7 @@ public class StaffController {
         model.addAttribute("sessionMessages", messages);
         
         Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
 		 
 		List<Order> orders = staffService.getConfirmedOrders();
 		int oSize = orders.size();
@@ -213,7 +304,7 @@ public class StaffController {
 
 		return "staff/updatestatus";
 	}
-
+	
 	@GetMapping("/restock")
 	public String restock(@ModelAttribute("stock") Stock stock, Model model, HttpSession session)
 	{
@@ -247,7 +338,7 @@ public class StaffController {
 			return "redirect:/staff";
 		
 	}
-
+	
 	@GetMapping("/bills")
 	public String bills(@ModelAttribute("bill") Bill bill, Model model, HttpSession session)
 	{
@@ -261,6 +352,7 @@ public class StaffController {
         model.addAttribute("sessionMessages", messages);
         
         Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
 		 
 		List<Bill> bills = staffService.getStartedBills();
 		int oSize = bills.size();
@@ -291,7 +383,7 @@ public class StaffController {
         model.addAttribute("bills", bills);
 		return "staff/bills";
 	}
-
+	
 	@GetMapping("/assign")
 	public String assign(Model model, HttpSession session)
 	{
@@ -303,6 +395,8 @@ public class StaffController {
 			return "home/error";
 		}
         model.addAttribute("sessionMessages", messages);
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
         List<Menu> menus = adminService.getAllMenu();
         Bill bill = new Bill();
 
@@ -324,20 +418,84 @@ public class StaffController {
 			return "home/error";
 		}
         Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
         System.out.println("----"+messages);
         
-		Menu menu = staffService.getMenuById(menuItem);
-		bill.setName(menu.getName());
-		bill.setEmail(staffModel.getEmail());
-		bill.setPrice(menu.getPrice());
-		int total = Integer.parseInt(menu.getPrice()) * Integer.parseInt(bill.getQuantity());
-		bill.setFinalBill(String.valueOf(total));
-		bill.setStatus("started");
+		List<Menu> menus = staffService.getMenuById(menuItem);
+		System.out.println("--menu size"+menus.size());
+		menus.forEach(menu -> {
+			Bill billy = new Bill();
+			billy.setName(menu.getName());
+			billy.setEmail(staffModel.getEmail());
+			billy.setPrice(menu.getPrice());
+			int total = Integer.parseInt(menu.getPrice()) * Integer.parseInt(bill.getQuantity());
+			billy.setFinalBill(String.valueOf(total));
+			billy.setStatus("started");
+			billy.setQuantity(bill.getQuantity());
+			billy.setTableName(bill.getTableName());
+			
+			Notification notification = new Notification();
+			
+			notification.setEmail(billy.getEmail());
+			notification.setName(billy.getName());
+			notification.setDescription("Order "+billy.getName()+" is placed");
+			notification.setStatus("placed");
+			notification.setUserType("staff");
+			
+			userService.saveNotify(notification);
+			
+			Order order = new Order();
+			
+			order.setCardName("cash");
+			order.setEmail(staffModel.getEmail());
+			order.setCvv("cash");
+			order.setFinalBill(billy.getFinalBill());
+			order.setQuantity(bill.getQuantity());
+			order.setName(billy.getName());
+			order.setTotalCost(billy.getFinalBill());
+			order.setStatus("ordered");
+			order.setType(menu.getType());
+			userService.saveOrder(order);
+			
+				staffService.saveAssign(billy);
+		});
 		
-			staffService.saveAssign(bill);
+		
+		
 		
 			return "redirect:/staff";
 		
+	}
+	
+
+	
+	@GetMapping("/notifications")
+	public String notifications(Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
+		 
+		List<Notification> notifies = staffService.getAllNotifications();
+		int oSize = notifies.size();
+		if(oSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("notifications", notifies);
+
+		return "staff/notifications";
 	}
 	
 	

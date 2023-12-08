@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.rms.app.model.Menu;
 import com.rms.app.model.User;
 import com.rms.app.service.UserService;
 
@@ -32,6 +33,21 @@ public class RMSController {
 	
 	@GetMapping("/")
 	public String getHome(Model model) {
+		
+	      
+		List<Menu> menuList = userService.getAllMenu();
+			
+	        
+	        model.addAttribute("menus", menuList);
+		return "index";
+	}
+	
+	@PostMapping("/applyFilter")
+	public String applyFilter(Model model, HttpSession session, @RequestParam("category") String category,
+			 @RequestParam("type") String type, @RequestParam("vegOrNonVeg") String vegOrNonVeg) {
+		
+        List<Menu> menus = userService.filterMenu(category,type, vegOrNonVeg);
+        model.addAttribute("menus", menus);
 		return "index";
 	}
 

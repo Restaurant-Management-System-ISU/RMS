@@ -1,5 +1,6 @@
 package com.rms.app.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,13 +10,18 @@ import org.springframework.stereotype.Service;
 
 import com.rms.app.dao.BillRepo;
 import com.rms.app.dao.MenuRepo;
+import com.rms.app.dao.NotificationRepo;
 import com.rms.app.dao.OrderRepo;
+import com.rms.app.dao.ReviewRepo;
 import com.rms.app.dao.StaffRepo;
+import com.rms.app.dao.StockRepo;
 import com.rms.app.dao.TablesRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Bill;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Notification;
 import com.rms.app.model.Order;
+import com.rms.app.model.Review;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Stock;
 import com.rms.app.model.Tables;
@@ -36,13 +42,19 @@ public class StaffServiceImpl implements StaffService{
 	
 	@Autowired
 	private OrderRepo orderRepo;
-
+	
 	@Autowired
 	private StockRepo stockRepo;
-
+	
 	@Autowired
 	private BillRepo billRepo;
+	
+	@Autowired
+	private NotificationRepo notifyRepo;
 
+	@Autowired
+	private ReviewRepo reviewRepo;
+	
 	@Override
 	public int saveStaff(Staff staff) {
 		// TODO Auto-generated method stub
@@ -160,10 +172,17 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
-	public Menu getMenuById(String menuItem) {
+	public List<Menu> getMenuById(String menuItem) {
+		String[] menuIds = menuItem.split(",");
 		// TODO Auto-generated method stub
-		List<Menu> menuList = menuRepo.findAll().stream().filter(m -> m.getId().equals(Long.parseLong(menuItem))).collect(Collectors.toList());
-		return menuList.get(0);
+		
+		List<Menu> menuList = new ArrayList<Menu>();
+		
+		for (String menuId : menuIds) {
+			menuList.add(menuRepo.findAll().stream().filter(m -> m.getId().equals(Long.parseLong(menuId))).collect(Collectors.toList()).get(0));
+		}
+		
+		return menuList;
 	}
 
 	@Override
@@ -172,6 +191,41 @@ public class StaffServiceImpl implements StaffService{
 		billRepo.save(bill);
 		
 	}
+
+	@Override
+	public void completePayment(String tableName) {
+		// TODO Auto-generated method stub
+		List<Bill> bills = billRepo.findAll().stream().filter(b -> b.getTableName().equals(tableName)).collect(Collectors.toList());
+		bills.forEach(b -> b.setStatus("completed"));
+		billRepo.saveAll(bills);
+		
+	}
+
+	@Override
+	public List<Notification> getAllNotifications() {
+		// TODO Auto-generated method stub
+		return notifyRepo.findAll().stream().filter(n -> n.getUserType().equals("staff")).collect(Collectors.toList());
+	}
+
+	@Override
+	public Tables getTableById(Long id) {
+		// TODO Auto-generated method stub
+		return tableRepo.getById(id);
+	}
+
+	@Override
+	public Order getOrderById(Long id) {
+		// TODO Auto-generated method stub
+		return orderRepo.getById(id);
+	}
+
+	@Override
+	public List<Review> getCustomerReviews() {
+		// TODO Auto-generated method stub
+		return reviewRepo.findAll();
+	}
+
+
 	
 	
 
