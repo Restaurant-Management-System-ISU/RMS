@@ -13,7 +13,7 @@ import com.rms.app.model.User;
 @Repository
 public interface StaffRepo extends JpaRepository<Staff, Long>{
 
-	@Query( value = "select * from staff where email = :email", nativeQuery = true)
+	@Query( value = "select * from staff where email = :email or username = :email", nativeQuery = true)
 	Staff findbyEmail(@Param("email") String email);
 
 	@Query( value = "select * from staff where id = :id", nativeQuery = true)
