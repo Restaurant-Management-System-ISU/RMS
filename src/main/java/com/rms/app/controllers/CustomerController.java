@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Notification;
 import com.rms.app.model.Order;
 import com.rms.app.model.Review;
 import com.rms.app.model.Tables;
@@ -101,7 +102,28 @@ public class CustomerController {
 		return "customer/profile";
 	}
 	
+	@GetMapping("/guest")
+	public String guest(@ModelAttribute("user") User user, Model model, HttpSession session)
+	{  
+
+		return "customer/guest";
+	}
 	
+	@PostMapping("/updateProfile")
+	public String updateProfile(@ModelAttribute("user") User user, Model model)
+	{
+		System.out.println("save===user");
+		int output =userService.saveUser(user);
+		if(output>0) {
+			return "redirect:/profile";
+		}
+		
+		else {
+			model.addAttribute("errormsg", "Operation failed. Please try again");
+			return "home/error";
+		}
+		
+	}
 	
 	@PostMapping("/deleteProfile/{id}")
 	public String deleteProfile(@PathVariable(name="id") Long id,HttpServletRequest request, Model model)
@@ -112,7 +134,22 @@ public class CustomerController {
 			return "home/error2";
 	}
 	
-	
+	@PostMapping("/guestCheckIn")
+	public String guestCheckIn(HttpServletRequest request, Model model, @RequestParam("guest") String guestEmail)
+	{
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) request.getSession().getAttribute("MY_SESSION_MESSAGES");
+		if (messages == null) {
+			messages = new ArrayList<>();
+			request.getSession().setAttribute("MY_SESSION_MESSAGES", messages);
+		}
+		
+			messages.add(guestEmail);
+			request.getSession().setAttribute("MY_SESSION_MESSAGES", messages);
+			
+		 
+			return "redirect:/customer";
+	}
 	
 	@PostMapping("/addToCart/{id}")
 	public String addToCart(Model model, HttpSession session, @PathVariable(name="id") Long id, @RequestParam("quantity") String quantity) {
@@ -250,7 +287,15 @@ public class CustomerController {
 		table.setCustomerEmail(userModel.getEmail());
 		int output =userService.saveTable(table);
 		
+		Notification notification = new Notification();
 		
+		notification.setEmail(userModel.getEmail());
+		notification.setName(userModel.getUsername());
+		notification.setDescription(userModel.getEmail()+" "+"booked"+" "+table.getName()+" at "+table.getDatetime());
+		notification.setStatus("booked");
+		notification.setUserType("staff");
+		
+		userService.saveNotify(notification);
 		
 		if(output>0) {
 			return "redirect:/customer";
@@ -350,9 +395,15 @@ public class CustomerController {
 		
 		
 		
-	
+		Notification notification = new Notification();
 		
+		notification.setEmail(guest);
+		notification.setName(name.toString());
+		notification.setDescription(guest+" "+order.getStatus()+" "+name.toString());
+		notification.setStatus("ordered");
+		notification.setUserType("staff");
 		
+		userService.saveNotify(notification);
 		
 		userService.saveOrder(order);
 		
@@ -401,7 +452,11 @@ public class CustomerController {
 		
 		Notification notification = new Notification();
 		
-		
+		notification.setEmail(order.getEmail());
+		notification.setName(order.getName());
+		notification.setDescription(order.getEmail()+" "+order.getStatus()+" "+order.getName());
+		notification.setStatus("cancelled");
+		notification.setUserType("staff");
 		
 		userService.saveNotify(notification);
 		userService.cancelOrder(id);
@@ -481,9 +536,15 @@ public class CustomerController {
 		
 		ticket.setCustomerEmail(userModel.getEmail());
 		int output =userService.saveTicket(ticket);
-	
+		Notification notification = new Notification();
 		
+		notification.setEmail(userModel.getEmail());
+		notification.setName(userModel.getUsername());
+		notification.setDescription(ticket.getPriority()+"-"+ticket.getDescription());
+		notification.setStatus("help");
+		notification.setUserType("staff");
 		
+		userService.saveNotify(notification);
 		if(output>0) {
 			return "redirect:/customer";
 		}
@@ -494,6 +555,7 @@ public class CustomerController {
 		}
 		
 	}
+	
 	@PostMapping("/applyFilters")
 	public String applyFilters(Model model, HttpSession session, @RequestParam("category") String category,
 			 @RequestParam("type") String type, @RequestParam("vegOrNonVeg") String vegOrNonVeg) {
@@ -509,6 +571,33 @@ public class CustomerController {
         List<Menu> menus = userService.filterMenu(category,type, vegOrNonVeg);
         model.addAttribute("menus", menus);
 		return "customer/welcomecustomer";
+	}
+	
+	@GetMapping("/notification")
+	public String notification(@ModelAttribute("notification") Notification notification, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+		User userModel = userService.getUserByEmail(messages.get(0));
+		
+		if(userModel == null) {
+			model.addAttribute("errormsg", "Guest cannot use Notifications");
+			return "home/error";
+		}
+		 
+		List<Notification> notifications = userService.getAllNotifications(userModel.getEmail());
+		System.out.print(notifications.size());
+	        
+	    model.addAttribute("notifications", notifications);
+
+		return "customer/notification";
 	}
 	
 }
