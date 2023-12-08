@@ -102,13 +102,6 @@ public class CustomerController {
 		return "customer/profile";
 	}
 	
-	@GetMapping("/guest")
-	public String guest(@ModelAttribute("user") User user, Model model, HttpSession session)
-	{  
-
-		return "customer/guest";
-	}
-	
 	@PostMapping("/updateProfile")
 	public String updateProfile(@ModelAttribute("user") User user, Model model)
 	{
@@ -134,22 +127,7 @@ public class CustomerController {
 			return "home/error2";
 	}
 	
-	@PostMapping("/guestCheckIn")
-	public String guestCheckIn(HttpServletRequest request, Model model, @RequestParam("guest") String guestEmail)
-	{
-		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) request.getSession().getAttribute("MY_SESSION_MESSAGES");
-		if (messages == null) {
-			messages = new ArrayList<>();
-			request.getSession().setAttribute("MY_SESSION_MESSAGES", messages);
-		}
-		
-			messages.add(guestEmail);
-			request.getSession().setAttribute("MY_SESSION_MESSAGES", messages);
-			
-		 
-			return "redirect:/customer";
-	}
+	
 	
 	@PostMapping("/addToCart/{id}")
 	public String addToCart(Model model, HttpSession session, @PathVariable(name="id") Long id, @RequestParam("quantity") String quantity) {
