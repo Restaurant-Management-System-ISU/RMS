@@ -61,7 +61,18 @@ public interface UserService {
 
 	List<Notification> getAllNotifications(String email);
 
+	List<Menu> getSeasonalMenu();
+
 	List<Menu> filterSeasonMenu(String season);
+
+	void increaseCart(Long id);
+
+	void reduceQuantity(Long id);
+
+	String checkIsFirstOrder(String string);
+
+	
+
 
 
 }
