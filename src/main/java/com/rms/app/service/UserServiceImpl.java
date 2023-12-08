@@ -1,6 +1,12 @@
 package com.rms.app.service;
 
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +18,7 @@ import com.rms.app.dao.OrderRepo;
 import com.rms.app.dao.ReviewRepo;
 import com.rms.app.dao.StaffRepo;
 import com.rms.app.dao.TablesRepo;
+import com.rms.app.dao.TicketRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
@@ -19,6 +26,7 @@ import com.rms.app.model.Order;
 import com.rms.app.model.Review;
 import com.rms.app.model.Staff;
 import com.rms.app.model.Tables;
+import com.rms.app.model.Ticket;
 import com.rms.app.model.User;
 
 
@@ -42,6 +50,13 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private OrderRepo orderRepo;
+	
+	@Autowired
+	private ReviewRepo reviewRepo;
+	
+	@Autowired
+	private TicketRepo ticketRepo;
+	
 	
 	
 
@@ -203,7 +218,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<Menu> getAllMenu() {
 		// TODO Auto-generated method stub
-		return menuRepo.findAll();
+		return menuRepo.findAll().stream().filter(m -> m.getSeason().equals("normal")).collect(Collectors.toList());
 	}
 
 	@Override
@@ -214,7 +229,20 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void addToCart(Cart cart) {
+		
+		List<Cart> extCartList = cartRepo.findAll().stream().filter(c -> c.getCustomerEmail().equals(cart.getCustomerEmail()) && c.getName().equals(cart.getName())).collect(Collectors.toList());
+		if(extCartList.size() > 0) {
+			Cart extCart = extCartList.get(0);
+			int q = Integer.parseInt(cart.getQuantity()) + Integer.parseInt(extCart.getQuantity()); 
+			int fp = q * Integer.parseInt(cart.getPrice());
+			extCart.setQuantity(String.valueOf(q));
+			extCart.setTotalPrice(String.valueOf(fp));
+			cartRepo.save(extCart);
+		}
+		else {
+		
 		cartRepo.save(cart);
+		}
 		
 	}
 
@@ -243,7 +271,6 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-
 	@Override
 	public void saveOrder(Order order) {
 		// TODO Auto-generated method stub
@@ -257,7 +284,6 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		return orderRepo.findAll().stream().filter(o -> o.getEmail().equals(email)).collect(Collectors.toList());
 	}
-
 
 	@Override
 	public void cancelOrder(Long id) {
@@ -280,6 +306,19 @@ public class UserServiceImpl implements UserService{
 			orderRepo.save(o);
 		}
 		
+	}
+
+	@Override
+	public int saveTicket(Ticket ticket) {
+		// TODO Auto-generated method stub
+			ticketRepo.save(ticket);
+			
+			if(ticketRepo.save(ticket)!=null) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 	}
 
 	@Override
