@@ -600,5 +600,69 @@ public class CustomerController {
 		return "customer/notification";
 	}
 	
-}
+	@GetMapping("/seasonal")
+	public String seasonal(@ModelAttribute("user") User user, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 
+		
+        model.addAttribute("sessionMessages", messages);
+        
+        List<Menu> menuList = userService.getSeasonalMenu();
+		
+        
+        model.addAttribute("menus", menuList);
+
+		return "customer/seasonal";
+	}
+	
+	@PostMapping("/applySeasonalFilter")
+	public String applyFilters(Model model, HttpSession session, @RequestParam("season") String season) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		User userdata = userService.findUser(messages.get(0));
+        model.addAttribute("sessionMessages", messages);
+        List<Menu> menus = userService.filterSeasonMenu(season);
+        model.addAttribute("menus", menus);
+		return "customer/seasonal";
+	}
+	
+	@PostMapping("/increaseQuantity/{id}")
+	public String increaseQuantity(@PathVariable(name="id") Long id,Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error2";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		userService.increaseCart(id);
+		
+		return "redirect:/cart";
+	}
+	
+	
+	@PostMapping("/reduceQuantity/{id}")
+	public String reduceQuantity(@PathVariable(name="id") Long id,Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error2";
+		}
+		User userdata = userService.findUser(messages.get(0));
+		
+		userService.reduceQuantity(id);
+		
+		return "redirect:/cart";
+	}
+}

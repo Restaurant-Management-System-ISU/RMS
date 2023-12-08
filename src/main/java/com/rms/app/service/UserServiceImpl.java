@@ -413,8 +413,52 @@ public class UserServiceImpl implements UserService{
                 ArrayList::new));
 	}
 
+	@Override
+	public void increaseCart(Long id) {
+		// TODO Auto-generated method stub
+		
+		Cart cart = cartRepo.getById(id);
+		
+		int q = Integer.parseInt(cart.getQuantity()) + 1;
+		int t = q * Integer.parseInt(cart.getPrice());
+		
+		cart.setQuantity(String.valueOf(q));
+		cart.setTotalPrice(String.valueOf(t));
+		cartRepo.save(cart);
+		
+		
+	}
+
+	@Override
+	public void reduceQuantity(Long id) {
+		// TODO Auto-generated method stub
+	Cart cart = cartRepo.getById(id);
+		if(cart.getQuantity().equals("1")) {
+			cartRepo.delete(cart);
+		}
+		else {
+		int q = Integer.parseInt(cart.getQuantity()) - 1;
+		int t = q * Integer.parseInt(cart.getPrice());
+		cart.setQuantity(String.valueOf(q));
+		cart.setTotalPrice(String.valueOf(t));
+		cartRepo.save(cart);
+		}
+	}
+
+	@Override
+	public String checkIsFirstOrder(String email) {
+		// TODO Auto-generated method stub
+		List<Order> orders = orderRepo.findAll().stream().filter(o -> o.getEmail().equals(email)).collect(Collectors.toList());
+		if(orders.size() > 0) {
+			return "false";
+		}
+		else {
+			return "true";
+		}
+	}
 
 	
-
+	
+	
 
 }
