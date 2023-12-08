@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.rms.app.dao.CartRepo;
 import com.rms.app.dao.MenuRepo;
+import com.rms.app.dao.NotificationRepo;
 import com.rms.app.dao.OrderRepo;
 import com.rms.app.dao.ReviewRepo;
 import com.rms.app.dao.StaffRepo;
@@ -22,6 +23,7 @@ import com.rms.app.dao.TicketRepo;
 import com.rms.app.dao.UserRepo;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Notification;
 import com.rms.app.model.Order;
 import com.rms.app.model.Review;
 import com.rms.app.model.Staff;
@@ -57,6 +59,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private TicketRepo ticketRepo;
 	
+	@Autowired
+	private NotificationRepo notifyRepo;
 	
 	
 
@@ -329,20 +333,61 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		List<Menu> menus = menuRepo.findAll();
+		List<Menu> filteredMenus = new ArrayList<Menu>();
 		
-		List<Menu> filteredMenus = menus.stream().filter(menu -> menu.getCategory().equals(category) || menu.getType().equals(type) || menu.getVegOrNonVeg().equals(vegOrNonVeg)).collect(Collectors.toList());	
+		if(!category.isEmpty() && type.isEmpty() && vegOrNonVeg.isEmpty()) {
+			filteredMenus = menus.stream().filter(menu -> menu.getCategory().equals(category)).collect(Collectors.toList());	
+		}
+		
+		else if(category.isEmpty() && !type.isEmpty() && vegOrNonVeg.isEmpty()) {
+			filteredMenus = menus.stream().filter(menu -> menu.getType().equals(type)).collect(Collectors.toList());	
+		}
+		
+		else if(category.isEmpty() && type.isEmpty() && !vegOrNonVeg.isEmpty()) {
+			filteredMenus = menus.stream().filter(menu -> menu.getVegOrNonVeg().equals(vegOrNonVeg)).collect(Collectors.toList());	
+		}
+		
+		else if(!category.isEmpty() && !type.isEmpty() && vegOrNonVeg.isEmpty()) {
+			filteredMenus = menus.stream().filter(menu -> menu.getCategory().equals(category) && menu.getType().equals(type)).collect(Collectors.toList());	
+		}
+		
+		else if(category.isEmpty() && !type.isEmpty() && !vegOrNonVeg.isEmpty()) {
+			filteredMenus = menus.stream().filter(menu -> menu.getVegOrNonVeg().equals(vegOrNonVeg) && menu.getType().equals(type)).collect(Collectors.toList());	
+		}
+		
+		else if(!category.isEmpty() && type.isEmpty() && !vegOrNonVeg.isEmpty()) {
+			filteredMenus = menus.stream().filter(menu -> menu.getCategory().equals(category) && menu.getVegOrNonVeg().equals(vegOrNonVeg)).collect(Collectors.toList());	
+		}
+		else {
+			filteredMenus = menus.stream().filter(menu -> menu.getCategory().equals(category) && menu.getType().equals(type) && menu.getVegOrNonVeg().equals(vegOrNonVeg)).collect(Collectors.toList());	
+		}
+		
+		 
 		
 		
 		
 		return filteredMenus.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(Menu::getId))),
                 ArrayList::new));
 	}
-	
+
+	@Override
+	public void saveNotify(Notification notification) {
+		// TODO Auto-generated method stub
+		notifyRepo.save(notification);
+	}
+
 	@Override
 	public Order getOrder(Long id) {
 		// TODO Auto-generated method stub
 		
 		return orderRepo.getById(id);
+	}
+
+	@Override
+	public List<Notification> getAllNotifications(String email) {
+		// TODO Auto-generated method stub
+		return notifyRepo.findAll().stream().filter(n -> n.getEmail().equals(email) && n.getUserType().equals("user")).collect(Collectors.toList());
+		
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Notification;
 import com.rms.app.model.Order;
 import com.rms.app.model.Review;
 import com.rms.app.model.Tables;
@@ -54,9 +55,11 @@ public interface UserService {
 
 	List<Menu> filterMenu(String category, String type, String vegOrNonVeg);
 
+	void saveNotify(Notification notification);
+
 	Order getOrder(Long id);
 
-	List<Menu> getSeasonalMenu();
+	List<Notification> getAllNotifications(String email);
 
 	List<Menu> filterSeasonMenu(String season);
 
