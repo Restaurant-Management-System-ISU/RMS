@@ -66,25 +66,6 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 | UserService | src/main/java/com/rms/app/service/UserService.java |
 | UserServiceImpl | src/main/java/com/rms/app/service/UserServiceImpl.java|
 
-## INSTALLATION
-| Hardware/Software | Source |
-| --- | --- |
-| Java (JDK 11) | https://www.oracle.com/java/technologies/downloads/#java11-windows |
-| Eclipse | https://www.eclipse.org/ |
-| MySQL | https://www.mysql.com/ |
-
-## APPLIED TECHNOLOGIES
-| Category | Technologies and Tools |
-| --- | --- |
-| IDE | Eclipse |
-| Programming Languages | Java (JDK 11) |
-| Frameworks and Libraries | Spring Boot |
-| Application Server | Apache Tomcat |
-| Front End |	HTML, CSS |
-| Backend	| Java, Spring Boot, Spring Web Security, Hibernate, Spring JPA, Tomcat, MySQL, Swagger (API Documentation), Node.js, Spring Boot Framework |
-| Database Server/DMBS | MySQL WorkBench |
-
-
 ## TEST LINK
 | Test Link |
 | --- |
@@ -105,8 +86,32 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 | StaffServiceTest | src/test/java/com/rms/app/service/StaffServiceTest.java |
 | UserServiceTest | src/test/java/com/rms/app/service/UserServiceTest.java |
 
+## INSTALLATION
+| Hardware/Software | Source |
+| --- | --- |
+| Java (JDK 11) | https://www.oracle.com/java/technologies/downloads/#java11-windows |
+| Eclipse | https://www.eclipse.org/ |
+| MySQL | https://www.mysql.com/ |
+
+## APPLIED TECHNOLOGIES
+| Category | Technologies and Tools |
+| --- | --- |
+| IDE | Eclipse |
+| Programming Languages | Java (JDK 11) |
+| Frameworks and Libraries | Spring Boot |
+| Application Server | Apache Tomcat |
+| Front End |	HTML, CSS |
+| Backend	| Java, Spring Boot, Spring Web Security, Hibernate, Spring JPA, Tomcat, MySQL, Swagger (API Documentation), Node.js, Spring Boot Framework |
+| Database Server/DMBS | MySQL WorkBench |
+
+
+
 ## AUTHORS
-Sai Vineela Madamanchi (smadama@ilstu.edu), Srilekha Naidu (snaidu1@ilstu.edu), Sairahul Baddapuram (sbaddap@ilstu.edu), Shreya Veeramaneni (sveera1@ilstu.edu), Shanmukh Chittabattini (schitt1@ilstu.edu)
+Sai Vineela Madamanchi (smadama@ilstu.edu)
+Srilekha Naidu (snaidu1@ilstu.edu)
+Sairahul Baddapuram (sbaddap@ilstu.edu)
+Shreya Veeramaneni (sveera1@ilstu.edu)
+Shanmukh Chittabattini (schitt1@ilstu.edu)
 
 
 
