@@ -60,12 +60,15 @@
                 <a class="nav-link" href="/staff">Home <span class="sr-only">(current)</span></a>
               </li>
               
-              <li class="nav-item">
+             <th:block th:if="${role} == 'kitchenstaff'">
+                <li class="nav-item">
                 <a class="nav-link" href="/confirmorders">Confirm Orders</a>
               </li>
-            <li class="nav-item">
+              
+              <li class="nav-item">
                 <a class="nav-link" href="/updatestatus">Update Order Status</a>
               </li>
+              </th:block>
               <li class="nav-item">
                 <a class="nav-link" href="/viewreservations">View Reservations</a>
               </li>
@@ -125,11 +128,11 @@
   <main id="main">
 	
       <br>
- <table class="table table-hover">
+ <table class="table table-hover" id="bil">
   <thead>
     <tr>
       <th scope="col">Name</th>
-       <th scope="col">Customer Email</th>
+       <th scope="col">Staff Email</th>
     
        
        
@@ -138,7 +141,7 @@
              <th scope="col">Quantity</th>
               <th scope="col">price</th>
               <th scope="col">Total</th>
-                    <th scope="col">Payment</th>
+                    <th scope="col">Print</th>
              
     </tr>
   </thead>
@@ -151,19 +154,19 @@
       <td th:text="${bill.quantity}"></td>
        <td th:text="${bill.price}"></td>
       <td th:text="${bill.finalBill}"></td>
-      
-      <td>
-      	  <form action="#" th:action="@{'/billPaid/' + ${bill.tableName}}" method="post">
-			  <button type="submit" class="btn btn-danger">
-	  			Paid
+     
+     <td>
+        <form action="#" th:action="@{'/billPaid/' + ${bill.tableName}}" method="post">
+			  <button type="submit" class="btn btn-danger" onclick="printDiv()">
+	  			Print
 			 </button>
 		   </form>
-      </td>
-      
-      
+		   </td>
     </tr>
   </th:block>
+ 
   </tbody>
+ 
 </table>
   
   
@@ -195,6 +198,19 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+  
+  <script> 
+        function printDiv() { 
+            var divContents = document.getElementById("bil").innerHTML; 
+            var a = window.open('', '', 'height=500, width=500'); 
+            a.document.write('<html>'); 
+            a.document.write('<body > <h1>Your Bill Is<br>'); 
+            a.document.write(divContents); 
+            a.document.write('</body></html>'); 
+            a.document.close(); 
+            a.print(); 
+        } 
+    </script> 
 
 </body>
 
