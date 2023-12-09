@@ -1,31 +1,11 @@
 # RESTAURANT MANAGEMENT SYSTEM
 
-In this project, we have applied a mixed architectural approach combining MVC and N-tier architecture for effective organization.
+The Restaurant Management System is an advanced software solution designed to enhance the efficiency and effectiveness of restaurant operations. Tailored to meet the needs of both customers and restaurant staff, it offers features like order processing, inventory management, and staff coordination. This system is integral for restaurant owners and staff, streamlining their daily tasks and improving the overall dining experience for customers.
+
+This application stands out by providing a user-friendly interface for customers to browse menus, place orders, and make reservations, while offering restaurant staff tools for efficient order and inventory management. It caters to various user groups, including individual diners, restaurant admin, and staff, ensuring a seamless and enjoyable dining and management experience. The system is accessible via web platforms and optimized for use on browsers like Google Chrome, requiring only a stable internet connection for optimal performance.
+
 
 ## MODEL VIEW CONTROLLER
-
-Model:
-The model classes are User and Menu, they represent key entities within our RMS.
-UserRepo and MenuRepo interact with the database, handling data storage and retrieval.
-
-View:
-In the presentation/UI layer, we have web pages, graphical interfaces that allow interactions with the system. Some of the components that are included in view are Login,Signup and Menu.
-
-Controller:
-In our RMS, application layer includes controllers for different user roles and services for managing the business logic.
-Controllers: RMSController, AdminController, CustomerController.
-Services: AdminService, UserService.
-
-## N-TIER ARCHITECTURE
-![architecture](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/e51c39ab-ae1f-4944-95c4-c99c7936f79d)
-
-
-## COMMUNICATION BETWEEN LAYERS
-The UI layer communicates with the application layer by invoking controller methods. For example, RMSController handles requests from customers.
-The application layer interacts with the domain layer through service methods, such as AdminService and UserService. These services perform business logic and use JPA repositories to access data.
-Repositories like UserRepo and MenuRepo, manage the persistence of data in the database.
-
-## GETTING STARTED
 
 ## SOURCE CODE LINK
 | Source Code Link |
@@ -65,6 +45,30 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 | StaffServiceImpl | src/main/java/com/rms/app/service/StaffServiceImpl.java |
 | UserService | src/main/java/com/rms/app/service/UserService.java |
 | UserServiceImpl | src/main/java/com/rms/app/service/UserServiceImpl.java|
+
+
+Model:
+The model classes are User and Menu, they represent key entities within our RMS.
+UserRepo and MenuRepo interact with the database, handling data storage and retrieval.
+
+View:
+In the presentation/UI layer, we have web pages, graphical interfaces that allow interactions with the system. Some of the components that are included in view are Login,Signup and Menu.
+
+Controller:
+In our RMS, application layer includes controllers for different user roles and services for managing the business logic.
+Controllers: RMSController, AdminController, CustomerController.
+Services: AdminService, UserService.
+
+## N-TIER ARCHITECTURE
+![architecture](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/e51c39ab-ae1f-4944-95c4-c99c7936f79d)
+
+
+## COMMUNICATION BETWEEN LAYERS
+The UI layer communicates with the application layer by invoking controller methods. For example, RMSController handles requests from customers.
+The application layer interacts with the domain layer through service methods, such as AdminService and UserService. These services perform business logic and use JPA repositories to access data.
+Repositories like UserRepo and MenuRepo, manage the persistence of data in the database.
+
+
 
 ## TEST LINK
 | Test Link |
