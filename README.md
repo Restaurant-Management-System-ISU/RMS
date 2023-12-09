@@ -17,7 +17,7 @@ Controllers: RMSController, AdminController, CustomerController.
 Services: AdminService, UserService.
 
 ## N-TIER ARCHITECTURE
-![architecturelayer](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/1a1f6980-3ab0-414b-b899-0cf0fc5e81aa)
+![architecture](https://github.com/Restaurant-Management-System-ISU/RMS/assets/133285349/e51c39ab-ae1f-4944-95c4-c99c7936f79d)
 
 
 ## COMMUNICATION BETWEEN LAYERS
@@ -27,8 +27,10 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 
 ## GETTING STARTED
 
-## SSOURCE CODE LINK
-| Source Code Link | [src/main/java/com/rms/app](https://github.com/Restaurant-Management-System-ISU/RMS/tree/main/src/main/java/com/rms/app) |
+## SOURCE CODE LINK
+| Source Code Link |
+| --- |
+| [src/main/java/com/rms/app](https://github.com/Restaurant-Management-System-ISU/RMS/tree/main/src/main/java/com/rms/app) |
 
 ## Model:
 | Entity | Path |
@@ -66,12 +68,14 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 
 ## INSTALLATION
 | Hardware/Software | Source |
+| --- | --- |
 | Java (JDK 11) | https://www.oracle.com/java/technologies/downloads/#java11-windows |
 | Eclipse | https://www.eclipse.org/ |
 | MySQL | https://www.mysql.com/ |
 
 ## APPLIED TECHNOLOGIES
 | Category | Technologies and Tools |
+| --- | --- |
 | IDE | Eclipse |
 | Programming Languages | Java (JDK 11) |
 | Frameworks and Libraries | Spring Boot |
@@ -82,8 +86,10 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 
 
 ## TEST LINK
-| Test Link | [src/test/java/com/rms/app](https://github.com/Restaurant-Management-System-ISU/RMS/tree/main/src/test/java/com/rms/app) |
-
+| Test Link |
+| --- |
+| [src/test/java/com/rms/app](https://github.com/Restaurant-Management-System-ISU/RMS/tree/main/src/test/java/com/rms/app) |
+ 
 ## TEST CASES
 ## Controller
 | Entity | Path |
@@ -100,11 +106,7 @@ Repositories like UserRepo and MenuRepo, manage the persistence of data in the d
 | UserServiceTest | src/test/java/com/rms/app/service/UserServiceTest.java |
 
 ## AUTHORS
-Sai Vineela Madamanchi (smadama@ilstu.edu)
-Srilekhs Naidu (snaidu1@ilstu.edu)
-Sairahul Baddapuram (sbaddap@ilstu.edu)
-Shreya Veeramaneni (sveera1@ilstu.edu)
-Shanmukh Chittabattini (schitt1@ilstu.edu)
+Sai Vineela Madamanchi (smadama@ilstu.edu), Srilekha Naidu (snaidu1@ilstu.edu), Sairahul Baddapuram (sbaddap@ilstu.edu), Shreya Veeramaneni (sveera1@ilstu.edu), Shanmukh Chittabattini (schitt1@ilstu.edu)
 
 
 
