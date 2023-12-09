@@ -44,7 +44,7 @@
     <header class="header_section">
       <div class="container">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="/">
             <span>
               Restaurant Management
             </span>
@@ -59,19 +59,25 @@
               <li class="nav-item active">
                 <a class="nav-link" href="/customer">Home <span class="sr-only">(current)</span></a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/viewmenu">Menu</a>
+               <li class="nav-item">
+                 <a class="nav-link" href="/seasonal">Seasonal Menu</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                 <a class="nav-link" href="/orders">My Orders</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/reservetable">Reserve Table</a>
               </li>
+               <li class="nav-item">
+                <a class="nav-link" href="/help">Help</a>
+              </li>
             </ul>
             
             <div class="user_option">
-            
+                        
+<a href="/notification" class="user_link">
+                <i class="fa fa-bell" aria-hidden="true"></i>
+              </a>
             <a href="/profile" class="user_link">
                 <i class="fa fa-user" aria-hidden="true"></i>
               </a>
@@ -174,7 +180,20 @@
       <td th:text="${cart.cuisine}"></td>
        <td th:text="${cart.vegOrNonVeg}"></td>
         <td th:text="${cart.price}"></td>
-        <td th:text="${cart.quantity}"></td>
+       <td>
+       <form style="float:left;" action="#" th:action="@{'/reduceQuantity/' + ${cart.Id}}" method="post">
+			  <button type="submit" class="btn btn-danger">
+	  			-
+			 </button>
+		   </form>
+        <p style="float:left;margin:10px;" th:text="${cart.quantity}"></p>
+        <form style="float:left;" action="#" th:action="@{'/increaseQuantity/' + ${cart.Id}}" method="post">
+			  <button type="submit" class="btn btn-danger">
+	  			+
+			 </button>
+		   </form>
+        </td>
+       
         
         <td th:text="${cart.totalPrice}"></td>
       <td>
@@ -193,8 +212,8 @@
 <p style="color:white">Your have to pay </p>
 <p style="color:white" th:text="${finalprice}"></p>
 <br>
-    <a href="/checkout" type="submit" class="btn btn-danger">
-	  			Submit Cart
+    <a href="/placeOrder" type="submit" class="btn btn-danger">
+	  			Place Order
 			 </a>
 			 
   </th:block>
