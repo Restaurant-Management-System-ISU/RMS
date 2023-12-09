@@ -468,6 +468,14 @@ public class StaffController {
 	}
 	
 
+	@PostMapping("/billPaid/{tableName}")
+	public String billPaid(@PathVariable(name="tableName") String tableName)
+	{
+		staffService.completePayment(tableName);
+		
+		return "redirect:/staff";
+	}
+
 	
 	@GetMapping("/notifications")
 	public String notifications(Model model, HttpSession session)
@@ -497,6 +505,33 @@ public class StaffController {
 
 		return "staff/notifications";
 	}
-	
-	
+
+	@GetMapping("/reviews")
+	public String viewreviews(Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        
+        Staff staffModel = staffService.getStaffByEmail(messages.get(0));
+        model.addAttribute("role", staffModel.getStaffType());
+		 
+		List<Review> reviews = staffService.getCustomerReviews();
+		int rSize = reviews.size();
+		if(rSize > 0) {
+			model.addAttribute("flag", 1);
+		}
+		else {
+			model.addAttribute("flag", 0);
+		}
+	        
+	    model.addAttribute("reviews", reviews);
+
+		return "staff/reviews";
+	}
 }
