@@ -45,7 +45,7 @@ input,textarea, .back {
 	    </div>
 	    <div class="form-group">
 	      <label for="description">Description</label>
-	      <textarea class="form-control" id="description" type="text" th:value="${menu.description}" name="description"></textarea>
+	      <textarea class="form-control" id="description" type="text" th:text="${menu.description}" name="description"></textarea>
 	    </div>
 	     <div class="form-group">
 	     	<label for="category">Category</label>
@@ -53,6 +53,15 @@ input,textarea, .back {
 		     <option th:value="null">Select Category</option>
 		    <option th:value="burger">Burger</option>
 		    <option th:value="pizza">Pizza</option>
+		    <option th:value="pasta">Pasta</option>
+		    <option th:value="friedrice">Fried Rice</option>
+		    <option th:value="noodles">Noodles</option>
+		    <option th:value="biryani">Biryani</option>
+		    <option th:value="soup">Soup</option>
+		    <option th:value="manchurian">Manchurian</option>
+		    <option th:value="naan">Naans</option>
+		    <option th:value="icecream">Ice Creams</option>
+		    <option th:value="cake">Cakes</option>
 		    </select>
 		  </div>
 		  
@@ -67,12 +76,25 @@ input,textarea, .back {
 		  </div>
 		  
 		  <div class="form-group">
+	     	<label for="type">Seasonal Menu</label>
+		     <select th:field="*{season}" class="form-control" required>
+		     <option th:value="null">Select Type</option>
+		      <option th:value="normal">Normal</option>
+		    <option th:value="summer">Summer</option>
+		    <option th:value="spring">Spring</option>
+		     <option th:value="rainy">Rainy</option>
+		    </select>
+		  </div>
+		  
+		  <div class="form-group">
 	     	<label for="cuisine">Cuisine</label>
 		     <select th:field="*{cuisine}" class="form-control" required>
 		     <option th:value="null">Select Cuisine</option>
 		    <option th:value="indian">Indian</option>
 		    <option th:value="chinese">Chinese</option>
 		     <option th:value="mexican">Mexican</option>
+		     <option th:value="italian">Italian</option>
+		     
 		    </select>
 		  </div>
 		  
@@ -89,6 +111,10 @@ input,textarea, .back {
 	      <label for="price">Price</label>
 	      <input class="form-control" id="price" th:value="${menu.price}" type="number" name="price">
 	    </div>
+	      <div class="form-group">
+    <label>Item Image</label>
+      <input type="file" class="form-control" name="image" accept="image/png, image/jpeg"/>
+    </div><br>
 	   
         </div>
         <div class="modal-footer">

@@ -24,6 +24,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
   <!-- font awesome style -->
   <link href="css/font-awesome.min.css" rel="stylesheet" />
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">  
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css"> 
 
   <!-- Custom styles for this template -->
   <link href="css/style.css" rel="stylesheet" />
@@ -58,12 +64,15 @@
                 <a class="nav-link" href="/staff">Home <span class="sr-only">(current)</span></a>
               </li>
               
-               <li class="nav-item">
+               <th:block th:if="${role} == 'kitchenstaff'">
+                <li class="nav-item">
                 <a class="nav-link" href="/confirmorders">Confirm Orders</a>
               </li>
-            <li class="nav-item">
+              
+              <li class="nav-item">
                 <a class="nav-link" href="/updatestatus">Update Order Status</a>
               </li>
+              </th:block>
               <li class="nav-item">
                 <a class="nav-link" href="/viewreservations">View Reservations</a>
               </li>
@@ -106,7 +115,7 @@
 	  
 	   <div class="form-group">
     <label>Menu Item</label>
-     <select class="form-control" name="menuItem"  id="dropOperator" required>
+     <select class="form-control" name="menuItem"  id="multiple-checkboxes" multiple="multiple" required>
     <option value="0">Select Menu Item</option>
     <option th:each="menu : ${menus}" th:value="${menu.Id}" th:text="${menu.name}"></option>
     </select>
@@ -169,6 +178,12 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+  
+  <script type="text/javascript">  
+    $(document).ready(function() {  
+        $('#multiple-checkboxes').multiselect();  
+    });  
+</script>  
 
 </body>
 
