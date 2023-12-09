@@ -475,6 +475,7 @@ public class StaffController {
 		
 		return "redirect:/staff";
 	}
+
 	
 	@GetMapping("/notifications")
 	public String notifications(Model model, HttpSession session)
@@ -504,7 +505,7 @@ public class StaffController {
 
 		return "staff/notifications";
 	}
-	
+
 	@GetMapping("/reviews")
 	public String viewreviews(Model model, HttpSession session)
 	{

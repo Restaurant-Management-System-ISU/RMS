@@ -7,18 +7,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rms.app.model.Bill;
 import com.rms.app.model.Cart;
 import com.rms.app.model.Menu;
+import com.rms.app.model.Notification;
 
 
 
 @Repository
-public interface CartRepo extends JpaRepository<Cart, Long>{
-	
-	@Query( value = "delete from cart where customer_email = :email", nativeQuery = true)
-	@Modifying
-    @Transactional
-	void deleteCart(@Param("email") String email);
+public interface NotificationRepo extends JpaRepository<Notification, Long>{
+
 
 
 

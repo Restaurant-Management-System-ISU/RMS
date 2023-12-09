@@ -12,20 +12,19 @@ public interface AdminService {
 
 	List<Menu> getAllMenu();
 
-	void saveMenu(Menu menu);
+	int saveMenu(Menu menu);
 
-	void deleteMenu(Long id);
+	int deleteMenu(Long id);
 
 	Menu getMenuById(Long id);
 
-	void updateMenu(Menu menu);
+	int updateMenu(Menu menu);
 
 	List<Staff> getAllStaff();
 
-	void saveStaff(Staff staff);
+	int saveStaff(Staff staff);
 
 	void deleteStaff(Long id);
-
 
 	
 

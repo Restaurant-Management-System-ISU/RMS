@@ -31,15 +31,24 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public void saveMenu(Menu menu) {
+	public int saveMenu(Menu menu) {
 		// TODO Auto-generated method stub
-		menuRepo.save(menu);
+		Menu men = menuRepo.save(menu);
+		if(men != null) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+		
+		
 	}
 
 	@Override
-	public void deleteMenu(Long id) {
+	public int deleteMenu(Long id) {
 		// TODO Auto-generated method stub
 		menuRepo.deleteById(id);
+		return 1;
 		
 	}
 
@@ -51,9 +60,16 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public void updateMenu(Menu menu) {
+	public int updateMenu(Menu menu) {
 		// TODO Auto-generated method stub
-		menuRepo.save(menu);
+		Menu men = menuRepo.save(menu);
+		
+		if(men != null) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 		
 	}
 
@@ -64,9 +80,15 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public void saveStaff(Staff staff) {
+	public int saveStaff(Staff staff) {
 		// TODO Auto-generated method stub
-		staffRepo.save(staff);
+		Staff staf = staffRepo.save(staff);
+		if(staf != null) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 		
 	}
 
@@ -76,6 +98,7 @@ public class AdminServiceImpl implements AdminService{
 		staffRepo.deleteById(id);
 		
 	}
+	
 	
 
 	

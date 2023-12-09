@@ -24,12 +24,13 @@ public class Menu {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	private String name;
-//	@Lob
-//	@Column(columnDefinition = "MEDIUMBLOB")
-//	private String photo;
+	@Lob
+	@Column(columnDefinition = "MEDIUMBLOB")
+	private String photo;
 	private String description;
 	private String category;
 	private String type;
+	private String season;
 	private String cuisine;
 	private String vegOrNonVeg;
 	private String price;

@@ -14,22 +14,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
-public class Order {
+@Table(name = "notifications")
+public class Notification {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	private String name;
 	private String email;
-	private String price;
-	private String quantity;
-	private String totalCost;
-	private String finalBill;
-	private String type;
-	private String cardName;
-	private String cardNumber;
-	private String cvv;
+	private String description;
+	private String userType;
 	private String status;
 
 }
